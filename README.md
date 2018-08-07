@@ -1,6 +1,6 @@
 # scrooble
 
-##MVP
+## MVP
 
 - User can log in, sign up, or play as a guest.
 - Display a list of users in the room.
