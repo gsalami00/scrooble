@@ -22,3 +22,5 @@ Phase 2
 
 
 */
+
+export {default as Homepage} from './Homepage'
