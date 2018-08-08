@@ -5,7 +5,7 @@ export default class Messages extends Component {
   constructor() {
     super()
     this.state = {
-      messages: []
+      messages: ['c00l_username: hello chatroom!!']
     }
   }
   addMessage(message) {
