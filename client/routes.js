@@ -9,7 +9,6 @@ class Routes extends Component {
       <Switch>
         <Route exact path="/" component={Homepage} />
         <Route exact path="/game" component={Messages} />
-        {/* Messages isn't right component; needs to eventually be fixed, leave for now so stuff can be tested */}
       </Switch>
     )
   }

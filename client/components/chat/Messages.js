@@ -1,35 +1,57 @@
-import React, {Component, Fragment} from 'react'
-import Input from './Input'
+import React, {Component} from 'react'
 
 export default class Messages extends Component {
   constructor() {
     super()
     this.state = {
-      messages: ['c00l_username: hello chatroom!!', 'otherUzer: um hi']
+      message: '',
+      messages: [
+        [1, 'c00l_username: hello chatroom!!'], // these cannot be objects like {key: 3, message: 'hi'}, in order to render below
+        [2, 'otherUzer: um hi']
+      ]
     }
+    this.handleChange = this.handleChange.bind(this)
+    this.handleSubmit = this.handleSubmit.bind(this)
   }
-  addMessage(message) {
-    event.preventDefault()
-    const userName = 'username'
-    const userAndMessage = `${userName}: ${message}`
+  handleChange(event) {
     this.setState({
-      messages: [...this.state, {messages: userAndMessage}]
+      [event.target.name]: event.target.value
+    })
+  }
+  handleSubmit(event) {
+    event.preventDefault()
+    const userName = 'mango_fan'
+    const userAndMessage = `${userName}: ${this.state.message}`
+    const nextKey = this.state.messages[this.state.messages.length - 1][0] + 1
+    this.setState({
+      messages: [...this.state.messages, [nextKey, userAndMessage]],
+      message: ''
     })
   }
   render() {
-    // make username and colon bold
-    // font should be arial or sans-serif and small ... how about, do that in css and give calssname here
+    // CSS to do:
+    // - make username and colon bold
+    // - font should be arial or sans-serif and small
     return (
       <div className="chat">
         {this.state.messages.map(userAndMessage => {
           return (
-            <div>
-              {userAndMessage}
+            <div key={userAndMessage[0]}>
+              {userAndMessage[1]}
               {'\n'}
             </div>
           )
         })}
-        <Input addMessage={this.addMessage} />
+        <form onSubmit={this.handleSubmit}>
+          <input
+            type="text"
+            name="message"
+            value={this.state.message}
+            onChange={this.handleChange}
+            placeholder="Make guesses here!"
+          />
+          <button type="Submit">GO</button>
+        </form>
       </div>
     )
   }
