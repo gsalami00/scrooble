@@ -4,7 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build-client": "webpack",
+    "build-client-watch": "webpack -w",
+    "start": "node server",
+    "start-dev": "NODE_ENV='development' npm run build-client-watch & npm run start-server",
+    "start-server": "nodemon server -e html,js,scss --ignore public --ignore client"
   },
   "repository": {
     "type": "git",
@@ -15,5 +19,44 @@
   "bugs": {
     "url": "https://github.com/fullstackMango/scrooble/issues"
   },
-  "homepage": "https://github.com/fullstackMango/scrooble#readme"
+  "homepage": "https://github.com/fullstackMango/scrooble#readme",
+  "dependencies": {
+    "@firebase/app": "^0.3.3",
+    "@firebase/auth": "^0.7.2",
+    "@firebase/database": "^0.3.4",
+    "@firebase/firestore": "^0.6.1",
+    "@firebase/functions": "^0.3.0",
+    "@firebase/messaging": "^0.3.5",
+    "@firebase/storage": "^0.2.3",
+    "body-parser": "^1.18.3",
+    "firebase": "^5.3.1",
+    "history": "^4.7.2",
+    "react": "^16.3.1",
+    "react-dom": "^16.0.0",
+    "react-redux": "^5.0.2",
+    "react-router-dom": "^4.1.1",
+    "redux": "^3.6.0",
+    "redux-logger": "^2.8.1",
+    "redux-thunk": "^2.2.0",
+    "socket.io": "^2.0.3"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.0.0-beta.40",
+    "@babel/polyfill": "^7.0.0-beta.40",
+    "@babel/preset-env": "^7.0.0-beta.40",
+    "@babel/preset-react": "^7.0.0-beta.40",
+    "@babel/preset-stage-2": "^7.0.0-beta.40",
+    "@babel/register": "^7.0.0-beta.40",
+    "babel-eslint": "^8.2.2",
+    "babel-loader": "^8.0.0-beta.2",
+    "eslint": "^4.19.1",
+    "eslint-config-fullstack": "^5.0.0",
+    "eslint-config-prettier": "^2.9.0",
+    "eslint-plugin-react": "^7.7.0",
+    "nodemon": "^1.17.5",
+    "prettier": "1.11.1",
+    "redux-devtools-extension": "^2.13.2",
+    "webpack": "^4.16.5",
+    "webpack-cli": "^3.1.0"
+  }
 }
