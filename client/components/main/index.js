@@ -5,12 +5,6 @@ import React, {Component} from 'react'
 import db from '../../../firestore.js'
 
 export default class GameroomFinder extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      username: props.username
-    }
-  }
   async componentDidMount() {
     try {
       const rooms = await db.collection('rooms').get()
