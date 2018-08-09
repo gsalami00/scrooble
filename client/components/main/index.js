@@ -4,7 +4,13 @@
 import React, {Component} from 'react'
 import db from '../../../firestore.js'
 
-export default class Game extends Component {
+export default class GameroomFinder extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      username: props.username
+    }
+  }
   async componentDidMount() {
     try {
       const rooms = await db.collection('rooms').get()
@@ -20,9 +26,13 @@ export default class Game extends Component {
             })
           })
           .catch(err => {
-            console.log('Error getting documents: ', error)
+            console.log('Error getting documents: ', err)
           })
-        this.props.history.push(`/${notFullRooms[0]}`)
+        const username = this.props.location.state
+        this.props.history.push({
+          pathname: `/${notFullRooms[0]}`,
+          state: username
+        })
       } else {
         const room = await db.collection('rooms').add({
           isFull: false,
@@ -31,7 +41,11 @@ export default class Game extends Component {
         })
         console.log('room is', room)
         console.log('room.data is', room.data)
-        this.props.history.push(`/${room.id}`)
+        const username = this.props.location.state
+        this.props.history.push({
+          pathname: `/${room.id}`,
+          state: username.username
+        })
       }
     } catch (err) {
       console.log(err)
