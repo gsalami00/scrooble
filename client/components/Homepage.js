@@ -27,7 +27,11 @@ export default class Homepage extends Component {
   }
   handleSubmit(event) {
     event.preventDefault()
-    // do the firebase stuff here and then redirect to the game room
+    // this.props.history.push({
+    //   pathname: '/gameroomfinder',
+    //   state: this.state.username
+    // })
+    localStorage.setItem('username', this.state.username)
     this.props.history.push('/gameroomfinder')
   }
   render() {
