@@ -30,20 +30,10 @@ export default class Messages extends Component {
       messages: [...this.state.messages, [nextKey, userAndMessage]],
       message: ''
     })
-    event.preventDefault()
-    db.settings({
-      timestampsInSnapshots: true
-    })
-    const document = db
-      .collection('rooms')
-      .doc(this.props.match.params.roomNumber)
-      .get()
-    const docId = this.props.match.params.roomNumber
-    // probably done in outer Room component layer. when you create a room you can set route to room id. create a room (db.collection('rooms').add), when redirect o to room, have it slash room id and push to htat route, so history push to that route. so we'd do this.props.match.params. or, since it's in this.props.match.params anyway if that's how we're doing it, we can just grab that.
     const newMessage = db
       // assign player to room
       .collection('rooms')
-      .doc(this.state.roomNumber)
+      .doc(this.props.match.params.roomId)
       .collection('chats')
       .add({
         username: this.state.username,
