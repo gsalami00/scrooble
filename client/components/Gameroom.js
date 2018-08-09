@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import db from '../../firestore.js'
 import { forEach } from '@firebase/util'
 import Chat from './chat'
+import Lobby from './lobby'
 
 export default class Gameroom extends Component {
   constructor() {
@@ -10,7 +11,7 @@ export default class Gameroom extends Component {
       username: ''
     }
   }
-  componentDidMount(){
+  componentDidMount() {
     console.log('We are in the gameroom')
     // const snapshot = db.collection('rooms').doc('5J2RcS6VBh9zZSxRnLhW').collection('players')
     // snapshot.get().then(result => {
@@ -22,7 +23,8 @@ export default class Gameroom extends Component {
   render() {
     return (
       <div>
-        <Chat />
+        <div className='lobbybox' ><Lobby /></div>
+        <div className='chatbox' ><Chat /></div>
       </div>
     )
   }

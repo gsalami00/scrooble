@@ -1,0 +1,15 @@
+.chatbox {
+  background-color: #b6b6ff;
+  width: 25vw;
+  float: right;
+  margin: 2vw 2vw;
+  padding: 3vw 3vw;
+}
+
+.lobbybox {
+  background-color: #ffead0;
+  width: 30vw;
+  float: left;
+  margin: 2vw 2vw;
+  padding: 3vw 3vw;
+}
