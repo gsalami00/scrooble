@@ -23,6 +23,7 @@ export default class Messages extends Component {
     })
   }
   handleSubmit(event) {
+    event.preventDefault()
     const userName = this.state.username
     const userAndMessage = `${userName}: ${this.state.message}`
     const nextKey = this.state.messages[this.state.messages.length - 1][0] + 1

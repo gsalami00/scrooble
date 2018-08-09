@@ -38,6 +38,6 @@ export default class Game extends Component {
     }
   }
   render() {
-    return <div>This is the Game component. Have console open.</div>
+    return <div>Loading room...</div>
   }
 }
