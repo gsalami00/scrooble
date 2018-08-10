@@ -3,6 +3,7 @@ import db from '../../firestore.js'
 import {forEach} from '@firebase/util'
 import Chat from './chat'
 import Lobby from './lobby'
+import {Link} from 'react-router-dom'
 
 export default class Gameroom extends Component {
   constructor() {
@@ -27,6 +28,7 @@ export default class Gameroom extends Component {
   render() {
     return (
       <div>
+        <Link to='/' >Home</Link>
         <div className="lobbybox">
           <Lobby roomId={this.props.match.params.gameroom} />
         </div>

@@ -4,6 +4,8 @@
   float: right;
   margin: 2vw 2vw;
   padding: 3vw 3vw;
+  max-height: 70vw;
+
 }
 
 .lobbybox {
@@ -12,4 +14,12 @@
   float: left;
   margin: 2vw 2vw;
   padding: 3vw 3vw;
+  max-height: 70vw;
+}
+
+.playercard {
+  background-color: #52c5ff;
+  margin: 1vw 1vw;
+  padding: 1vw 1vw;
+  border-radius: 10px;
 }
