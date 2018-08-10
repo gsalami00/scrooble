@@ -28,7 +28,7 @@ export default class Gameroom extends Component {
     return (
       <div>
         <div className="lobbybox">
-          <Lobby />
+          <Lobby roomId={this.props.match.params.gameroom} />
         </div>
         <div className="chatbox">
           <Chat roomId={this.props.match.params.gameroom} />

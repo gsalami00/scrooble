@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 
 export default class PlayerCard extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
     }
   }
@@ -17,8 +17,8 @@ export default class PlayerCard extends Component {
   render() {
     return (
       <React.Fragment>
-        <div>#1</div>
-        <div>username</div>
+        {/* <div>{this.props.key}</div> */}
+        <div>{this.props.name}</div>
         <div>points: 100</div>
         </React.Fragment>
     )
