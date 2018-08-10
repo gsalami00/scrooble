@@ -22,7 +22,7 @@ export default class Messages extends Component {
       [event.target.name]: event.target.value
     })
   }
-  handleSubmit(event) {
+  async handleSubmit(event) {
     event.preventDefault()
     const userName = this.state.username
     const userAndMessage = `${userName}: ${this.state.message}`
@@ -31,7 +31,7 @@ export default class Messages extends Component {
       messages: [...this.state.messages, [nextKey, userAndMessage]],
       message: ''
     })
-    const newMessage = db
+    const newMessage = await db
       // assign player to room
       .collection('rooms')
       .doc(this.props.roomId)
@@ -40,7 +40,6 @@ export default class Messages extends Component {
         username: this.state.username,
         message: this.state.message
       })
-    console.log('newMessage is', newMessage)
   }
   render() {
     // CSS to do:

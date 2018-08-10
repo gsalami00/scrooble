@@ -6,11 +6,11 @@ import React from 'react'
 
 // export default {Top, Messages, Input}
 
-const Chat = () => {
+const Chat = props => {
   return (
     <React.Fragment>
       {/* <Top /> */}
-      <Messages />
+      <Messages roomId={props.roomId} />
       {/* <Input /> */}
     </React.Fragment>
   )
