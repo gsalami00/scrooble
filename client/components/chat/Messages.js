@@ -4,6 +4,7 @@ import db from '../../../firestore.js'
 export default class Messages extends Component {
   constructor(props) {
     super(props)
+    this.scroll = React.createRef()
     this.state = {
       message: '',
       messages: [
@@ -40,6 +41,7 @@ export default class Messages extends Component {
         username: this.state.username,
         message: this.state.message
       })
+    this.scroll.current.scrollTop = this.scroll.current.scrollHeight
   }
   render() {
     // CSS to do:
@@ -47,14 +49,16 @@ export default class Messages extends Component {
     // - font should be arial or sans-serif and small
     return (
       <div className="chat">
-        {this.state.messages.map(userAndMessage => {
-          return (
-            <div key={userAndMessage[0]}>
-              {userAndMessage[1]}
-              {'\n'}
-            </div>
-          )
-        })}
+        <div className="chat-messages" ref={this.scroll}>
+          {this.state.messages.map(userAndMessage => {
+            return (
+              <div key={userAndMessage[0]}>
+                {userAndMessage[1]}
+                {'\n'}
+              </div>
+            )
+          })}
+        </div>
         <form onSubmit={this.handleSubmit}>
           <input
             type="text"
