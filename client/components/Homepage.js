@@ -27,15 +27,23 @@ export default class Homepage extends Component {
   }
   handleSubmit(event) {
     event.preventDefault()
-    // do the firebase stuff here and then redirect to the game room
-    this.props.history.push(`/${roomId}`)
+
+    // this.props.history.push({
+    //   pathname: '/gameroomfinder',
+    //   state: this.state.username
+    // })
+    localStorage.setItem('username', this.state.username)
+    this.props.history.push('/gameroomfinder')
+
   }
   render() {
     return (
       <div>
         <h1>Scrooble</h1>
         <div>Quick Play</div>
-        <Link to="/canvas">GAMEROOM</Link>
+
+        {/* <Link to="/gameroom">GAMEROOM</Link> */}
+
         <form onSubmit={this.handleSubmit}>
           <label htmlFor="username">Player Name</label>
           <input

@@ -1,28 +1,38 @@
-import React, { Component } from 'react'
+import React, {Component} from 'react'
 import db from '../../firestore.js'
-import { forEach } from '@firebase/util'
+import {forEach} from '@firebase/util'
 import Chat from './chat'
+import Lobby from './lobby'
 
 export default class Gameroom extends Component {
   constructor() {
-    super();
+    super()
     this.state = {
-      username: ''
+      username: localStorage.getItem('username')
     }
   }
-  componentDidMount(){
+  async componentDidMount() {
     console.log('We are in the gameroom')
-    // const snapshot = db.collection('rooms').doc('5J2RcS6VBh9zZSxRnLhW').collection('players')
-    // snapshot.get().then(result => {
-    //   result.forEach(player=> {
-    //     console.log(player.data())
-    //   })
-    // })
+    // console.log('this.state.username is', this.state.username)
+    const snapshot = await db
+      .collection('rooms')
+      .doc(this.props.match.params.gameroom)
+      .collection('players')
+      .add({
+        score: 0,
+        username: this.state.username
+      })
+    // console.log(snapshot,'this is the snapshot')
   }
   render() {
     return (
       <div>
-        <Chat />
+        <div className="lobbybox">
+          <Lobby />
+        </div>
+        <div className="chatbox">
+          <Chat roomId={this.props.match.params.gameroom} />
+        </div>
       </div>
     )
   }
