@@ -7,7 +7,7 @@
     "build-client": "webpack",
     "build-client-watch": "webpack -w",
     "start": "node server",
-    "start-dev": "NODE_ENV='development' webpack-dev-server --content-base public/",
+    "start-dev": "NODE_ENV='development' webpack-dev-server --content-base public/ --host 172.16.23.224",
     "start-server": "nodemon server -e html,js,scss --ignore public --ignore client"
   },
   "repository": {
