@@ -9,19 +9,24 @@
  */
 import React, {Component} from 'react'
 import CanvasDraw from 'react-canvas-draw'
+import db from '../../../firestore.js'
 
 export default class Canvas extends Component {
   constructor() {
     super()
     this.state = {
       color: '#000',
-      width: 800,
-      height: 600,
       size: 6,
       x: 0,
-      y: 0
+      y: 0,
+      width: 400,
+      height: 400,
+      record: false
     }
+    this.canvasData = []
     this.handleMouseMove = this.handleMouseMove.bind(this)
+    this.handleMouseDown = this.handleMouseDown.bind(this)
+    this.handleMouseUp = this.handleMouseUp.bind(this)
   }
   componentDidMount() {
     // static defaultProps =
@@ -32,10 +37,57 @@ export default class Canvas extends Component {
     //   canvasHeight: 1000,
     //   disabled: false
   }
-  handleMouseMove(event) {
+  handleMouseDown() {
     this.setState({
-      x: event.clientX,
-      y: event.clientY
+      record: true
+    })
+  }
+
+  async handleMouseMove(event) {
+    event.persist()
+    if (this.state.record) {
+      const currentRoomId = location.pathname.slice(1)
+      const roundList = await db
+        .collection('rooms')
+        .doc(currentRoomId)
+        .collection('drawings')
+        .get()
+      const currentRoundIndex = roundList.docs.length - 1
+      const drawings = await db
+        .collection('rooms')
+        .doc(currentRoomId)
+        .collection('drawings')
+        .get()
+      const currentRoundDrawingId = drawings.docs[currentRoundIndex].id
+      // const currentRoundDrawingCanvasRef = await db.ref(
+      //   `rooms/${currentRoomId}/drawings/${currentRoundDrawingId}`
+      // )
+      const res = await db
+        .collection('rooms')
+        .doc(currentRoomId)
+        .collection('drawings')
+        .doc(currentRoundDrawingId)
+        .get()
+      // const canvasData = res.data().canvasData
+      this.canvasData.push({
+        x: event.clientX,
+        y: event.clientY,
+        size: this.state.size,
+        color: this.state.color
+      })
+      console.log(this.canvasData)
+      // console.log(currentRoundIndex)
+      // db.ref(`rooms/${currentRoom}/drawings/`)
+      // console.log(currentRoundDrawingCanvasRef)
+      this.setState({
+        x: this.canvasData[this.canvasData.length - 1].x,
+        y: this.canvasData[this.canvasData.length - 1].y
+      })
+    }
+  }
+  handleMouseUp() {
+    this.setState({
+      record: false
     })
   }
   render() {
@@ -50,8 +102,9 @@ export default class Canvas extends Component {
     console.log(this.state.x, this.state.y)
     return (
       <div
-        style={{border: '1px solid black', width: '800px', margin: '0px auto'}}
+        onMouseDown={this.handleMouseDown}
         onMouseMove={this.handleMouseMove}
+        onMouseUp={this.handleMouseUp}
       >
         <CanvasDraw
           canvasWidth={this.state.width}

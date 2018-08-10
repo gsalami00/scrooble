@@ -3,6 +3,7 @@ import db from '../../firestore.js'
 import {forEach} from '@firebase/util'
 import Chat from './chat'
 import Lobby from './lobby'
+import Canvas from './canvas'
 
 export default class Gameroom extends Component {
   constructor() {
@@ -29,6 +30,9 @@ export default class Gameroom extends Component {
       <div>
         <div className="lobbybox">
           <Lobby />
+        </div>
+        <div className="canvas">
+          <Canvas />
         </div>
         <div className="chatbox">
           <Chat roomId={this.props.match.params.gameroom} />
