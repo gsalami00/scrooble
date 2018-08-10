@@ -4,6 +4,16 @@
   float: right;
   margin: 2vw 2vw;
   padding: 3vw 3vw;
+  max-height: 70vw;
+}
+
+.chat-messages {
+  height: 200px;
+  width: 200px;
+  border: 1px solid black;
+  overflow: auto;
+  font-family: Verdana;
+  font-size: 11px;
 }
 
 .lobbybox {
@@ -12,6 +22,14 @@
   float: left;
   margin: 2vw 2vw;
   padding: 3vw 3vw;
+  max-height: 70vw;
+}
+
+.playercard {
+  background-color: #52c5ff;
+  margin: 1vw 1vw;
+  padding: 1vw 1vw;
+  border-radius: 10px;
 }
 
 canvas {
