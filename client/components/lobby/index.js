@@ -28,13 +28,14 @@ export default class Lobby extends Component {
       players: playerArr
     })
   }
+
   render() {
     const allPlayers = this.state.players
     return (
       <React.Fragment>
         <div>Map over playercards</div>
         {allPlayers.map((player, idx) => {
-          return <PlayerCard name={player} key={idx} />
+          return <div className="playercard" ><PlayerCard name={player} key={idx} /></div>
         })}
         </React.Fragment>
     )
