@@ -51,17 +51,17 @@ export default class Canvas extends Component {
         .doc(currentRoomId)
         .collection('drawings')
         .get()
-      // const currentRoundDrawingId = drawings.docs[currentRoundIndex].id
-      // // const currentRoundDrawingCanvasRef = await db.ref(
-      // //   `rooms/${currentRoomId}/drawings/${currentRoundDrawingId}`
-      // // )
-      // const res = await db
-      //   .collection('rooms')
-      //   .doc(currentRoomId)
-      //   .collection('drawings')
-      //   .doc(currentRoundDrawingId)
-      //   .get()
-      // const canvasData = res.data().canvasData
+      const currentRoundDrawingId = drawings.docs[currentRoundIndex].id
+      // const currentRoundDrawingCanvasRef = await db.ref(
+      //   `rooms/${currentRoomId}/drawings/${currentRoundDrawingId}`
+      // )
+      const res = await db
+        .collection('rooms')
+        .doc(currentRoomId)
+        .collection('drawings')
+        .doc(currentRoundDrawingId)
+        .get()
+      const canvasData = res.data().canvasData
 
       this.canvasData.push({
         x: event.clientX,
@@ -116,20 +116,19 @@ export default class Canvas extends Component {
   }
   render() {
     console.log(this.state.x, this.state.y)
-    let line = {
-      color: '#000',
-      size: 6,
-      startX: 0,
-      startY: 0,
-      endX: 50,
-      endY: 50
-    }
+    // let line = {
+    //   color: '#000',
+    //   size: 6,
+    //   startX: 0,
+    //   startY: 0,
+    //   endX: 50,
+    //   endY: 50
+    // }
     return (
       <div
         onMouseDown={this.handleMouseDown}
         onMouseMove={this.handleMouseMove}
         onMouseUp={this.handleMouseUp}
-        onClick={drawLine(line)}
       >
         <CanvasDraw
           canvasWidth={this.state.width}
