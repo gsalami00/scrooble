@@ -33,8 +33,16 @@ export default class GameroomFinder extends Component {
           isFull: false,
           playerCount: 1,
           isPrivate: false,
-          round: 1
+          round: 1,
+          timer: 30
         })
+        const drawingInstance = await db
+          .collection('rooms')
+          .doc(room.id)
+          .collection('drawings')
+          .add({
+            canvasData: []
+          })
         console.log('room is', room)
         console.log('room.data is', room.data)
         const username = this.props.location.state
