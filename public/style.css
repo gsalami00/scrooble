@@ -43,3 +43,10 @@ canvas {
   float: left;
   border: 1px solid black;
 }
+
+.timer {
+  width: 100px;
+  height: 100px;
+  background-color: #52c5ff;
+  clear: both;
+}
