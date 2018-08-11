@@ -6,36 +6,43 @@ import Lobby from './lobby'
 import Canvas from './canvas'
 import {Link} from 'react-router-dom'
 
-
 export default class Gameroom extends Component {
   constructor() {
     super()
     this.state = {
-      username: localStorage.getItem('username')
+      username: localStorage.getItem('username'),
+      canvasData: []
     }
+    this.handleUpdate = this.handleUpdate.bind(this)
   }
   async componentDidMount() {
-    console.log('We are in the gameroom')
-    // console.log('this.state.username is', this.state.username)
-    const snapshot = await db
+    const canvasInstance = await db
       .collection('rooms')
-      .doc(this.props.match.params.gameroom)
-      .collection('players')
-      .add({
-        score: 0,
-        username: this.state.username
-      })
-    // console.log(snapshot,'this is the snapshot')
+      .doc(location.pathname.slice(1))
+      .collection('drawings')
+      .doc('5TBBhPQ69Oa3HmfkwCIa')
+    // canvasInstance.onSnapshot(snapshot => {
+    //   let dataArray = snapshot.data().canvasData
+    //   this.setState({
+    //     canvasData: [dataArray[dataArray.length - 1]]
+    //   })
+    // })
+  }
+  handleUpdate() {
+    this.setState({
+      canvasData: [1, 2, 3]
+    })
   }
   render() {
+    console.log(this.state.canvasData)
     return (
       <div>
-        <Link to='/' >Home</Link>
+        <Link to="/">Home</Link>
         <div className="lobbybox">
           <Lobby roomId={this.props.match.params.gameroom} />
         </div>
         <div className="canvas">
-          <Canvas />
+          <Canvas canvasData={this.state.canvasData} />
         </div>
         <div className="chatbox">
           <Chat roomId={this.props.match.params.gameroom} />
