@@ -13,86 +13,47 @@ export default class Gameroom extends Component {
       username: localStorage.getItem('username'),
       canvasData: []
     }
-    this.usernameCheck = this.usernameCheck.bind(this)
     this.handleUpdate = this.handleUpdate.bind(this)
   }
-  async UNSAFE_componentWillMount() {
-    const gameRoomId = location.pathname.slice(1)
-    console.log(this.state.canvasData)
-    let {username} = this.state
-    const finalUsername = await this.usernameCheck(username)
-    localStorage.setItem('username', finalUsername)
-    this.setState({
-      username: finalUsername
-    })
-    // creates player:
-    await db.doc(`rooms/${gameRoomId}/players/${finalUsername}`).set({
-      score: 0,
-      myTurn: false,
-      guessedWord: false,
-      username: finalUsername
-    })
-  }
   async componentDidMount() {
-    const gameRoomId = location.pathname.slice(1)
-    // console.log(this.state.canvasData)
-    // let {username} = this.state
-    // const finalUsername = await this.usernameCheck(username)
-    // localStorage.setItem('username', finalUsername)
-    // // creates player:
-    // await db.doc(`rooms/${gameRoomId}/players/${finalUsername}`).set({
-    //   score: 0,
-    //   myTurn: false,
-    //   guessedWord: false,
-    //   username: finalUsername
-    // })
+    try {
+      const gameRoomId = localStorage.getItem('room') //location.pathname.slice(1)
+      const currentGame = await db.collection('rooms').doc(gameRoomId)
+      const currentGameGet = await db
+        .collection('rooms')
+        .doc(gameRoomId)
+        .get()
 
-    const currentGame = await db.collection('rooms').doc(gameRoomId)
-    const currentGameGet = await db
-      .collection('rooms')
-      .doc(gameRoomId)
-      .get()
+      // console.log('CurrentGameDocData:', currentGame)
+      // console.log('CurrentGameDocGETDATA:', currentGameGet.data())
+      const canvasInstance = await db
+        .collection(`rooms/${gameRoomId}/drawings`)
+        .add({})
+      // const playersInGame = await db.doc(`rooms/${gameRoomId}/players/${}`)
 
-    // console.log('CurrentGameDocData:', currentGame)
-    // console.log('CurrentGameDocGETDATA:', currentGameGet.data())
-    const canvasInstance = await db
-      .collection(`rooms/${gameRoomId}/drawings`)
-      .add({})
-    // const playersInGame = await db.doc(`rooms/${gameRoomId}/players/${}`)
-
-    const currentGameData = currentGameGet.data()
-    let currentTimer = currentGameData.timer
-    let currentRound = currentGameData.round
-    if (currentGameData.playerCount > 0) {
-      setInterval(() => {
-        if (currentTimer > -1) {
-          if (currentTimer === 0) {
-            console.log('Current Round:', currentRound)
+      const currentGameData = currentGameGet.data()
+      let currentTimer = currentGameData.timer
+      let currentRound = currentGameData.round
+      if (currentGameData.playerCount > 0) {
+        setInterval(() => {
+          if (currentTimer > -1) {
+            if (currentTimer === 0) {
+              console.log('Current Round:', currentRound)
+              currentGame.update({
+                round: ++currentRound
+              })
+              console.log('Next Round:', currentRound)
+            }
+            console.log(currentTimer)
             currentGame.update({
-              round: ++currentRound
+              timer: currentTimer--
             })
-            console.log('Next Round:', currentRound)
           }
-          console.log(currentTimer)
-          currentGame.update({
-            timer: currentTimer--
-          })
-        }
-      }, 1000)
-    }
-  }
-  async usernameCheck(username) {
-    const gameRoomId = location.pathname.slice(1)
-    let docRef = await db.doc(`rooms/${gameRoomId}/players/${username}`)
-    await docRef.get().then(doc => {
-      if (doc.exists) {
-        username = `${username}${Math.random().toFixed(5) * 100000}`
-        return this.usernameCheck(username)
-      } else {
-        return username
+        }, 1000)
       }
-    })
-    return username
+    } catch (err) {
+      console.log(err)
+    }
   }
   handleUpdate() {
     this.setState({

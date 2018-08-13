@@ -19,7 +19,8 @@ export default class GameroomFinder extends Component {
           .catch(err => {
             console.log('Error getting documents: ', err)
           })
-        this.props.history.push(`/${notFullRooms[0]}`)
+        localStorage.setItem('room', notFullRooms[0])
+        this.props.history.push('/username-decider')
       } else {
         const room = await db.collection('rooms').add({
           isFull: false,
@@ -35,7 +36,8 @@ export default class GameroomFinder extends Component {
           .add({
             canvasData: []
           })
-        this.props.history.push(`/${room.id}`)
+        localStorage.setItem('room', room.id)
+        this.props.history.push('/username-decider')
       }
     } catch (err) {
       console.log(err)
