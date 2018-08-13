@@ -26,16 +26,6 @@ export default class Gameroom extends Component {
         username: this.state.username
       })
 
-    // console.log(nameTaken)
-    // const players = await db
-    //   .collection(`rooms/${gameRoomId}/players/${this.state.username}`)
-    //   .set({
-    //     score: 0,
-    //     myTurn: false,
-    //     username: this.state.username,
-    //     guessedWord: false
-    //   })
-
     const currentGame = await db.collection('rooms').doc(gameRoomId)
     const currentGameGet = await db
       .collection('rooms')
