@@ -8,7 +8,8 @@ export default class Messages extends Component {
     this.state = {
       message: '',
       messages: [
-        [1, 'c00l_username: hello chatroom!!'], // these cannot be objects like {key: 3, message: 'hi'}, in order to render below
+        // these cannot be objects like {key: 3, userAndMessage: 'hi'}, because that gives rendering error
+        [1, 'c00l_username: hello chatroom!!'],
         [2, 'otherUzer: um hi']
       ],
       roomNumber: '1',
