@@ -9,7 +9,7 @@ export default class GameroomFinder extends Component {
         let notFullRooms = []
         await db
           .collection('rooms')
-          .where('isFull', '==', true) // change true to false after testing
+          .where('isFull', '==', false)
           .get()
           .then(querySnapshot => {
             querySnapshot.forEach(room => {
