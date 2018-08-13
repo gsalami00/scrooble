@@ -16,48 +16,45 @@ export default class Gameroom extends Component {
     this.handleUpdate = this.handleUpdate.bind(this)
   }
   async componentDidMount() {
-    const gameRoomId = location.pathname.slice(1)
-    const makePlayer = await db
-      .doc(`rooms/${gameRoomId}/players/${this.state.username}`)
-      .set({
-        score: 0,
-        myTurn: false,
-        guessedWord: false,
-        username: this.state.username
-      })
+    try {
+      const gameRoomId = localStorage.getItem('room') //location.pathname.slice(1)
+      const currentGame = await db.collection('rooms').doc(gameRoomId)
+      const currentGameGet = await db
+        .collection('rooms')
+        .doc(gameRoomId)
+        .get()
 
-    const currentGame = await db.collection('rooms').doc(gameRoomId)
-    const currentGameGet = await db
-      .collection('rooms')
-      .doc(gameRoomId)
-      .get()
+      // console.log('CurrentGameDocData:', currentGame)
+      // console.log('CurrentGameDocGETDATA:', currentGameGet.data())
+      const canvasInstance = await db
+        .collection(`rooms/${gameRoomId}/drawings`)
+        .add({})
+      // const playersInGame = await db.doc(`rooms/${gameRoomId}/players/${}`)
 
-    console.log('CurrentGameDocData:', currentGame)
-    console.log('CurrentGameDocGETDATA:', currentGameGet.data())
-    // const canvasInstance = await db
-    //   .collection(`rooms/${gameRoomId}/drawings`)
-    //   .add({})
-    // const playersInGame = await db.doc(`rooms/${gameRoomId}/players/${}`)
+      console.log('CurrentGameDocData:', currentGame)
+      console.log('CurrentGameDocGETDATA:', currentGameGet.data())
+      // const canvasInstance = await db
+      //   .collection(`rooms/${gameRoomId}/drawings`)
+      //   .add({})
+      // const playersInGame = await db.doc(`rooms/${gameRoomId}/players/${}`)
 
-    const currentGameData = currentGameGet.data()
-    let currentTimer = currentGameData.timer
-    let currentRound = currentGameData.round
-    if (currentGameData.playerCount > 0) {
-      setInterval(() => {
-        if (currentTimer > -1) {
-          if (currentTimer === 0) {
-            console.log('Current Round:', currentRound)
-            currentGame.update({
-              round: ++currentRound
-            })
-            console.log('Next Round:', currentRound)
+      const currentGameData = currentGameGet.data()
+      let currentTimer = currentGameData.timer
+      let currentRound = currentGameData.round
+      if (currentGameData.playerCount > 0) {
+        setInterval(() => {
+          if (currentTimer > -1) {
+            if (currentTimer === 0) {
+              console.log('Current Round:', currentRound)
+              currentGame.update({
+                timer: currentTimer--
+              })
+            }
           }
-          console.log(currentTimer)
-          currentGame.update({
-            timer: currentTimer--
-          })
-        }
-      }, 1000)
+        }, 1000)
+      }
+    } catch (err) {
+      console.log(err)
     }
   }
   handleUpdate() {
@@ -66,7 +63,7 @@ export default class Gameroom extends Component {
     })
   }
   render() {
-    console.log(this.state.canvasData)
+    console.log('this.state.username is', this.state.username)
     return (
       <div>
         <Link to="/">Home</Link>
@@ -80,7 +77,10 @@ export default class Gameroom extends Component {
           <Canvas canvasData={this.state.canvasData} />
         </div>
         <div className="chatbox">
-          <Chat roomId={this.props.match.params.gameroom} />
+          <Chat
+            roomId={this.props.match.params.gameroom}
+            username={this.state.username}
+          />
         </div>
       </div>
     )
