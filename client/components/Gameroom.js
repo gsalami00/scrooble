@@ -17,6 +17,14 @@ export default class Gameroom extends Component {
   }
   async componentDidMount() {
     const gameRoomId = location.pathname.slice(1)
+    const makePlayer = await db
+      .doc(`rooms/${gameRoomId}/players/${this.state.username}`)
+      .set({
+        score: 0,
+        myTurn: false,
+        guessedWord: false,
+        username: this.state.username
+      })
 
     const currentGame = await db.collection('rooms').doc(gameRoomId)
     const currentGameGet = await db
