@@ -14,11 +14,16 @@ export default class Messages extends Component {
       ],
       roomNumber: '1',
       chatNumber: '1',
-      username: localStorage.getItem('username'),
+      username: '',
       chosenWord: '' // this should exist in Room instance
     }
     this.handleChange = this.handleChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
+  }
+  componentDidMount() {
+    this.setState({
+      username: this.props.username
+    })
   }
   handleChange(event) {
     this.setState({
@@ -27,7 +32,7 @@ export default class Messages extends Component {
   }
   async handleSubmit(event) {
     event.preventDefault()
-    const {username, message, messages, chosenWord} = this.state
+    let {username, message, messages, chosenWord} = this.state // let instead of const because we check message.toLowerCase()
     if (message && chosenWord === message.toLowerCase()) {
       // IF CORRECT WORD (making sure not empty string, then making sure same as chosenWord)
       await db

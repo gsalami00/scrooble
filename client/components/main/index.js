@@ -1,6 +1,3 @@
-// this would be the 'game' componnet
-// for now at least, it will simply redirect to the correct :roomId (the correct game room)
-
 import React, {Component} from 'react'
 import db from '../../../firestore.js'
 

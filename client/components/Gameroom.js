@@ -13,18 +13,39 @@ export default class Gameroom extends Component {
       username: localStorage.getItem('username'),
       canvasData: []
     }
+    this.usernameCheck = this.usernameCheck.bind(this)
     this.handleUpdate = this.handleUpdate.bind(this)
+  }
+  async UNSAFE_componentWillMount() {
+    const gameRoomId = location.pathname.slice(1)
+    console.log(this.state.canvasData)
+    let {username} = this.state
+    const finalUsername = await this.usernameCheck(username)
+    localStorage.setItem('username', finalUsername)
+    this.setState({
+      username: finalUsername
+    })
+    // creates player:
+    await db.doc(`rooms/${gameRoomId}/players/${finalUsername}`).set({
+      score: 0,
+      myTurn: false,
+      guessedWord: false,
+      username: finalUsername
+    })
   }
   async componentDidMount() {
     const gameRoomId = location.pathname.slice(1)
-    const makePlayer = await db
-      .doc(`rooms/${gameRoomId}/players/${this.state.username}`)
-      .set({
-        score: 0,
-        myTurn: false,
-        guessedWord: false,
-        username: this.state.username
-      })
+    // console.log(this.state.canvasData)
+    // let {username} = this.state
+    // const finalUsername = await this.usernameCheck(username)
+    // localStorage.setItem('username', finalUsername)
+    // // creates player:
+    // await db.doc(`rooms/${gameRoomId}/players/${finalUsername}`).set({
+    //   score: 0,
+    //   myTurn: false,
+    //   guessedWord: false,
+    //   username: finalUsername
+    // })
 
     const currentGame = await db.collection('rooms').doc(gameRoomId)
     const currentGameGet = await db
@@ -32,8 +53,8 @@ export default class Gameroom extends Component {
       .doc(gameRoomId)
       .get()
 
-    console.log('CurrentGameDocData:', currentGame)
-    console.log('CurrentGameDocGETDATA:', currentGameGet.data())
+    // console.log('CurrentGameDocData:', currentGame)
+    // console.log('CurrentGameDocGETDATA:', currentGameGet.data())
     const canvasInstance = await db
       .collection(`rooms/${gameRoomId}/drawings`)
       .add({})
@@ -60,13 +81,26 @@ export default class Gameroom extends Component {
       }, 1000)
     }
   }
+  async usernameCheck(username) {
+    const gameRoomId = location.pathname.slice(1)
+    let docRef = await db.doc(`rooms/${gameRoomId}/players/${username}`)
+    await docRef.get().then(doc => {
+      if (doc.exists) {
+        username = `${username}${Math.random().toFixed(5) * 100000}`
+        return this.usernameCheck(username)
+      } else {
+        return username
+      }
+    })
+    return username
+  }
   handleUpdate() {
     this.setState({
       canvasData: [1, 2, 3]
     })
   }
   render() {
-    console.log(this.state.canvasData)
+    console.log('this.state.username is', this.state.username)
     return (
       <div>
         <Link to="/">Home</Link>
@@ -80,7 +114,10 @@ export default class Gameroom extends Component {
           <Canvas canvasData={this.state.canvasData} />
         </div>
         <div className="chatbox">
-          <Chat roomId={this.props.match.params.gameroom} />
+          <Chat
+            roomId={this.props.match.params.gameroom}
+            username={this.state.username}
+          />
         </div>
       </div>
     )

@@ -10,7 +10,7 @@ const Chat = props => {
   return (
     <React.Fragment>
       {/* <Top /> */}
-      <Messages roomId={props.roomId} />
+      <Messages roomId={props.roomId} username={props.username} />
     </React.Fragment>
   )
 }
