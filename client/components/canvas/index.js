@@ -19,6 +19,7 @@ export default class Canvas extends Component {
       x: 0,
       y: 0,
       record: false,
+      lineEnd: false,
       canvasData: []
     }
     this.handleMouseDown = this.handleMouseDown.bind(this)
@@ -72,17 +73,18 @@ export default class Canvas extends Component {
   }
   handleMouseMove(event) {
     if (this.state.record) {
-      console.log(this.state.canvasData)
+      // console.log(this.state.canvasData)
       const latestPoint = {
         x: event.clientX,
         y: event.clientY,
         strokeColor: 'black',
-        size: 3
+        size: 3,
+        lineEnd: false
       }
 
       if (this.state.canvasData.length > 1) {
         this.state.canvasData.forEach((point, idx, arr) => {
-          if (idx > 0 && idx < arr.length) {
+          if (idx > 0 && idx < arr.length && !point.lineEnd) {
             let startX = arr[idx - 1].x
             let startY = arr[idx - 1].y
             let endX = point.x
@@ -102,10 +104,17 @@ export default class Canvas extends Component {
   }
   handleMouseUp() {
     this.setState({
-      record: false
+      record: false,
+      canvasData: [
+        ...this.state.canvasData,
+        (this.state.canvasData[this.state.canvasData.length - 1][
+          lineEnd
+        ] = true)
+      ]
     })
   }
   render() {
+    console.log(this.state.record)
     return (
       <div
         onMouseDown={this.handleMouseDown}
