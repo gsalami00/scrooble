@@ -34,9 +34,9 @@ export default class Gameroom extends Component {
 
     console.log('CurrentGameDocData:', currentGame)
     console.log('CurrentGameDocGETDATA:', currentGameGet.data())
-    const canvasInstance = await db
-      .collection(`rooms/${gameRoomId}/drawings`)
-      .add({})
+    // const canvasInstance = await db
+    //   .collection(`rooms/${gameRoomId}/drawings`)
+    //   .add({})
     // const playersInGame = await db.doc(`rooms/${gameRoomId}/players/${}`)
 
     const currentGameData = currentGameGet.data()

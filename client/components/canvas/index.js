@@ -8,133 +8,62 @@
  *   - events: an EventEmitter that emits `draw` events.
  */
 import React, {Component} from 'react'
-import CanvasDraw, {drawLine} from 'react-canvas-draw'
 import db from '../../../firestore.js'
 
 export default class Canvas extends Component {
   constructor() {
     super()
     this.state = {
-      color: '#000',
-      size: 6,
+      color: '#000000',
+      lineWidth: 6,
       x: 0,
-      y: 0,
-      width: 400,
-      height: 400,
-      record: false
+      y: 0
     }
     this.canvasData = []
-    this.handleMouseMove = this.handleMouseMove.bind(this)
-    this.handleMouseDown = this.handleMouseDown.bind(this)
-    this.handleMouseUp = this.handleMouseUp.bind(this)
-    // this.tempCanvas = this.tempCanvas.bind(this)
   }
-  componentDidMount() {}
-  handleMouseDown() {
-    this.setState({
-      record: true
-    })
-  }
+  async componentDidMount() {
+    this.drawCanvas()
+    // const roomId = location.pathname.slice(1)
+    const roomId = 'aQFOGkBUusXJmGP808XR' // REPLACE WITH LINE ABOVE
 
-  async handleMouseMove(event) {
-    event.persist()
-    if (this.state.record) {
-      const currentRoomId = location.pathname.slice(1)
-      const roundList = await db
-        .collection('rooms')
-        .doc(currentRoomId)
-        .collection('drawings')
-        .get()
-      const currentRoundIndex = roundList.docs.length - 1
-      const drawings = await db
-        .collection('rooms')
-        .doc(currentRoomId)
-        .collection('drawings')
-        .get()
-      const currentRoundDrawingId = drawings.docs[currentRoundIndex].id
-      // const currentRoundDrawingCanvasRef = await db.ref(
-      //   `rooms/${currentRoomId}/drawings/${currentRoundDrawingId}`
-      // )
-      const res = await db
-        .collection('rooms')
-        .doc(currentRoomId)
-        .collection('drawings')
-        .doc(currentRoundDrawingId)
-        .get()
-      const canvasData = res.data().canvasData
-
-      this.canvasData.push({
-        x: event.clientX,
-        y: event.clientY,
-        size: this.state.size,
-        color: this.state.color
+    // const drawingInstance = await db
+    const drawingCollectionInfo = await db
+      .collection(`rooms/${roomId}/drawings`)
+      .get()
+    console.log(drawingCollectionInfo)
+    const drawingCollection = await db.collection(`rooms/${roomId}/drawings`)
+    console.log('Here is drawing collectioninfo!:', drawingCollectionInfo)
+    if (drawingCollectionInfo.empty) {
+      console.log('drawing collection is empty! Time to add some stuff@!')
+      drawingCollection.add({
+        canvasData: [this.state]
       })
-
-      // console.log(this.canvasData)
-
-      const currentDrawingInstance = await db
-        .collection('rooms')
-        .doc(currentRoomId)
-        .collection('drawings')
-        .doc(currentRoundDrawingId)
-        .update({
-          canvasData: this.canvasData
-        })
-      // console.log(currentRoundIndex)
-      // db.ref(`rooms/${currentRoom}/drawings/`)
-      // console.log(currentRoundDrawingCanvasRef)
-      this.setState({
-        x: this.canvasData[this.canvasData.length - 1].x,
-        y: this.canvasData[this.canvasData.length - 1].y
+    } else {
+      const drawingDoc = drawingCollectionInfo.docs[0].id
+      await db.doc(`rooms/${roomId}/drawings/${drawingDoc}`).update({
+        canvasData: this.canvasData
       })
     }
+    // this.setState({
+    //   canvasData
+    // })
   }
-  // tempCanvas() {
-  //   let line = {
-  //     color: '',
-  //     size: 0,
-  //     startX: 0,
-  //     startY: 0,
-  //     endX: 0,
-  //     endY: 0
-  //   }
-  //   let canvasArray = this.props.canvasData
-  //   canvasArray.forEach((obj, idx, arr) => {
-  //     ;(line.color = obj.color),
-  //       (line.size = obj.size),
-  //       (line.startX = arr[idx - 1].x),
-  //       (line.startY = arr[idx - 1].y),
-  //       (line.endX = obj.x),
-  //       (line.endY = obj.y)
-  //   })
-  //   return line
-  // }
-  handleMouseUp() {
-    this.setState({
-      record: false
-    })
+
+  componentDidUpdate() {
+    this.drawCanvas()
   }
+
+  drawCanvas() {
+    const context = this.theCanvas.getContext('2d')
+  }
+
   render() {
-    console.log(this.state.x, this.state.y)
-    // let line = {
-    //   color: '#000',
-    //   size: 6,
-    //   startX: 0,
-    //   startY: 0,
-    //   endX: 50,
-    //   endY: 50
-    // }
     return (
-      <div
-        onMouseDown={this.handleMouseDown}
-        onMouseMove={this.handleMouseMove}
-        onMouseUp={this.handleMouseUp}
-      >
-        <CanvasDraw
-          canvasWidth={this.state.width}
-          canvasHeight={this.state.height}
-          brushColor={this.state.color}
-          brushSize={this.state.size}
+      <div>
+        <canvas
+          ref={canvas => (this.theCanvas = canvas)}
+          height={500}
+          width={500}
         />
       </div>
     )
