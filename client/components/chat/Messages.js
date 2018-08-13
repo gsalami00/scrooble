@@ -13,7 +13,8 @@ export default class Messages extends Component {
       ],
       roomNumber: '1',
       chatNumber: '1',
-      username: localStorage.getItem('username')
+      username: localStorage.getItem('username'),
+      chosenWord: '' // this should exist in Room instance
     }
     this.handleChange = this.handleChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
@@ -25,22 +26,42 @@ export default class Messages extends Component {
   }
   async handleSubmit(event) {
     event.preventDefault()
-    const userName = this.state.username
-    const userAndMessage = `${userName}: ${this.state.message}`
-    const nextKey = this.state.messages[this.state.messages.length - 1][0] + 1
-    this.setState({
-      messages: [...this.state.messages, [nextKey, userAndMessage]],
-      message: ''
-    })
-    const newMessage = await db
-      // assign player to room
-      .collection('rooms')
-      .doc(this.props.roomId)
-      .collection('chats')
-      .add({
-        username: this.state.username,
-        message: this.state.message
+    const {username, message, messages, chosenWord} = this.state
+    if (message && chosenWord === message.toLowerCase()) {
+      // IF CORRECT WORD (making sure not empty string, then making sure same as chosenWord)
+      await db
+        .collection('rooms')
+        .doc(this.props.roomId)
+        .collection('chats')
+        .add({
+          message: `${username} guessed the word!`
+        })
+      // await db
+      //   .collection('rooms')
+      //   .doc(this.props.roomId)
+      //   .collection('players')
+      //   .
+      // need ID of this user we are being right now so we're updating the correct one!
+      // make guessed property true
+      // if guessed property true, disable chat input for remainder of round
+      // end of turn, loop through each player and make guessed equal to false
+    } else {
+      const userAndMessage = `${username}: ${message}`
+      const nextKey = messages[messages.length - 1][0] + 1
+      this.setState({
+        messages: [...this.state.messages, [nextKey, userAndMessage]],
+        message: ''
       })
+      await db
+        // assign player to room
+        .collection('rooms')
+        .doc(this.props.roomId)
+        .collection('chats')
+        .add({
+          username: this.state.username,
+          message: this.state.message
+        })
+    }
     this.scroll.current.scrollTop = this.scroll.current.scrollHeight
   }
   render() {
