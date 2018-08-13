@@ -31,24 +31,25 @@ export default class Gameroom extends Component {
         .add({})
       // const playersInGame = await db.doc(`rooms/${gameRoomId}/players/${}`)
 
-    console.log('CurrentGameDocData:', currentGame)
-    console.log('CurrentGameDocGETDATA:', currentGameGet.data())
-    // const canvasInstance = await db
-    //   .collection(`rooms/${gameRoomId}/drawings`)
-    //   .add({})
-    // const playersInGame = await db.doc(`rooms/${gameRoomId}/players/${}`)
+      console.log('CurrentGameDocData:', currentGame)
+      console.log('CurrentGameDocGETDATA:', currentGameGet.data())
+      // const canvasInstance = await db
+      //   .collection(`rooms/${gameRoomId}/drawings`)
+      //   .add({})
+      // const playersInGame = await db.doc(`rooms/${gameRoomId}/players/${}`)
 
-    const currentGameData = currentGameGet.data()
-    let currentTimer = currentGameData.timer
-    let currentRound = currentGameData.round
-    if (currentGameData.playerCount > 0) {
-      setInterval(() => {
-        if (currentTimer > -1) {
-          if (currentTimer === 0) {
-            console.log('Current Round:', currentRound)
-            currentGame.update({
-              timer: currentTimer--
-            })
+      const currentGameData = currentGameGet.data()
+      let currentTimer = currentGameData.timer
+      let currentRound = currentGameData.round
+      if (currentGameData.playerCount > 0) {
+        setInterval(() => {
+          if (currentTimer > -1) {
+            if (currentTimer === 0) {
+              console.log('Current Round:', currentRound)
+              currentGame.update({
+                timer: currentTimer--
+              })
+            }
           }
         }, 1000)
       }
