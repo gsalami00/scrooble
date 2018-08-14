@@ -15,6 +15,7 @@ export default class Canvas extends Component {
     this.handleMouseMove = this.handleMouseMove.bind(this)
     this.roomId = 'aQFOGkBUusXJmGP808XR' // REPLACE WITH LINE
     this.username = localStorage.getItem('username')
+    this.turnOrderArray = []
   }
   async componentDidMount() {
     const playersCollectionInfo = await db
@@ -37,10 +38,11 @@ export default class Canvas extends Component {
         wordToGuess: ''
       })
     }
-    const turnOrderArray = await db
+    const drawingsCollectionInfo = await db
       .collection(`rooms/${this.roomId}/drawings`)
       .get()
-    console.log(turnOrderArray.docs[0].data().turnOrder, 'TURN!!!!')
+    const turnOrder = drawingsCollectionInfo.docs[0].data().turnOrder
+    this.turnOrderArray = [...turnOrder]
   }
 
   drawCanvas(start, end, strokeColor = 'black') {
@@ -99,12 +101,15 @@ export default class Canvas extends Component {
     }
   }
   handleMouseUp() {
-    let endDraw = this.state.canvasData[this.state.canvasData.length - 1]
-    endDraw.lineEnd = true
-    this.setState({
-      record: false,
-      canvasData: [...this.state.canvasData, endDraw]
-    })
+    if (this.state.canvasData.length) {
+      let endDraw = this.state.canvasData[this.state.canvasData.length - 1]
+      console.log(this.state.canvasData)
+      endDraw.lineEnd = true
+      this.setState({
+        record: false,
+        canvasData: [...this.state.canvasData, endDraw]
+      })
+    }
   }
   render() {
     return (
