@@ -30,7 +30,7 @@ export default class Timer extends Component {
 
   render() {
     return <div className="timer-text">
-    <div>{this.state.time}</div>
+    {this.state.time}
     </div>
   }
 }
