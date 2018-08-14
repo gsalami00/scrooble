@@ -81,9 +81,57 @@ body {
   line-height: 30px;
 }
 
+.play-card {
+  background-color: rgba(255, 255, 255, 0.75);
+  margin: 15vw 26vw;
+  display: inline-block;
+  height: 21vw;
+  width: 40vw;
+  padding: 2vw 4vw;
+  border-radius: 2vw;
+  box-shadow: 0 0 1rem #000000;
+}
+
 .input {
   width: 16vw;
   border-radius: 1vw;
+}
+
+.quick-play {
+  text-align: center;
+  font-size: 4em;
+}
+
+.homepage-form {
+  text-align: center;
+  margin: 2vw 0vw;
+}
+
+.form-input {
+  height: 2vw;
+  text-align: center;
+  margin: 1vw 1vw;
+}
+
+.btn {
+  flex: 1 1 auto;
+  margin: 1vw 1vw;
+  padding: 1vw;
+  text-align: center;
+  text-transform: uppercase;
+  transition: 0.5s;
+  background-size: 200% auto;
+  color: black;
+  box-shadow: 0 0 1px #000000;
+  border-radius: 10px;
+  background-image: linear-gradient( to right, #40b9ff 0%, #87ffbd 51%, #ffffff 100% );
+  height: 4vw;
+  width: 13vw;
+  font-size: 1.1em;
+}
+
+.btn:hover {
+  background-position: right center;
 }
 
 * {
