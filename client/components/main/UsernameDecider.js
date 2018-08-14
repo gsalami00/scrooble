@@ -32,7 +32,7 @@ export default class UsernameDecider extends Component {
       let docRef = await db.doc(`rooms/${gameRoomId}/players/${username}`)
       await docRef.get().then(doc => {
         if (doc.exists) {
-          username = `${username}${Math.random().toFixed(5) * 100000}`
+          username = `${username}${Math.floor(Math.random() * 100000)}`
           return this.usernameCheck(username)
         } else {
           return username
