@@ -13,7 +13,7 @@ export default class Canvas extends Component {
     this.handleMouseDown = this.handleMouseDown.bind(this)
     this.handleMouseUp = this.handleMouseUp.bind(this)
     this.handleMouseMove = this.handleMouseMove.bind(this)
-    this.roomId = 'aQFOGkBUusXJmGP808XR' // REPLACE WITH LINE
+    this.roomId = location.pathname.slice(1) // REPLACE WITH LINE
     this.username = localStorage.getItem('username')
     this.turnOrderArray = []
   }
@@ -87,15 +87,14 @@ export default class Canvas extends Component {
         }
       })
     }
-    const roomId = 'aQFOGkBUusXJmGP808XR' // REPLACE WITH LINE ABOVE
 
     const drawingCollectionInfo = await db
-      .collection(`rooms/${roomId}/drawings`)
+      .collection(`rooms/${this.roomId}/drawings`)
       .get()
 
     if (!drawingCollectionInfo.empty) {
       const drawingDoc = drawingCollectionInfo.docs[0].id
-      await db.doc(`rooms/${roomId}/drawings/${drawingDoc}`).update({
+      await db.doc(`rooms/${this.roomId}/drawings/${drawingDoc}`).update({
         canvasData: [...this.state.canvasData]
       })
     }
