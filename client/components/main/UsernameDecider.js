@@ -27,15 +27,14 @@ export default class UsernameDecider extends Component {
   async usernameCheck(username) {
     try {
       const gameRoomId = localStorage.getItem('room')
-      let docRef = await db.doc(`rooms/${gameRoomId}/players/${username}`)
-      await docRef.get().then(doc => {
-        if (doc.exists) {
-          username = `${username}${Math.floor(Math.random() * 100000)}`
-          return this.usernameCheck(username)
-        } else {
-          return username
-        }
-      })
+      const playersCollection = await db
+        .collection(`rooms/${gameRoomId}/players/`)
+        .get()
+      const playerArray = []
+      playersCollection.forEach(player => playerArray.push(player.id))
+      while (playerArray.includes(username)) {
+        username = username + Math.floor(Math.random() * 10)
+      }
       return username
     } catch (err) {
       console.log(err)
