@@ -9,21 +9,13 @@ export default class Messages extends Component {
       message: '',
       messages: [
         // these cannot be objects like {key: 3, userAndMessage: 'hi'}, because that gives rendering error
-        [1, 'c00l_username: hello chatroom!!'],
-        [2, 'otherUzer: um hi']
+        [1, 'Welcome to the chat!']
       ],
       roomNumber: '1',
-      chatNumber: '1',
-      username: '',
-      chosenWord: '' // this should exist in Room instance
+      chatNumber: '1'
     }
     this.handleChange = this.handleChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
-  }
-  componentDidMount() {
-    this.setState({
-      username: this.props.username
-    })
   }
   handleChange(event) {
     this.setState({
@@ -32,7 +24,16 @@ export default class Messages extends Component {
   }
   async handleSubmit(event) {
     event.preventDefault()
-    let {username, message, messages, chosenWord} = this.state // let instead of const because we check message.toLowerCase()
+    const username = localStorage.getItem('username')
+    const roomId = localStorage.getItem('room')
+    const response = await db
+      .collection('rooms')
+      .doc(roomId)
+      .get()
+    console.log('response in chat is', response)
+    const data = response.data()
+    console.log('response.data() in chat is', data)
+    let {message, messages, chosenWord} = this.state // let instead of const because we check message.toLowerCase()
     if (message && chosenWord === message.toLowerCase()) {
       // IF CORRECT WORD (making sure not empty string, then making sure same as chosenWord)
       await db
@@ -64,7 +65,7 @@ export default class Messages extends Component {
         .doc(this.props.roomId)
         .collection('chats')
         .add({
-          username: this.state.username,
+          username,
           message: this.state.message
         })
     }
