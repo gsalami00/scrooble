@@ -66,7 +66,6 @@ export default class Gameroom extends Component {
     console.log('this.state.username is', this.state.username)
     return (
       <div>
-        <Link to="/">Home</Link>
         <div className="timer">
           <Timer />
         </div>
@@ -82,6 +81,7 @@ export default class Gameroom extends Component {
             username={this.state.username}
           />
         </div>
+        <Link to="/">Home</Link>
       </div>
     )
   }
