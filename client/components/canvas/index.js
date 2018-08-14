@@ -58,7 +58,7 @@ export default class Canvas extends Component {
       record: true
     })
   }
-  async handleMouseMove(event) {
+  handleMouseMove(event) {
     event.persist()
     if (this.state.record) {
       const latestPoint = {
@@ -86,20 +86,19 @@ export default class Canvas extends Component {
         }
       })
     }
-
-    const drawingCollectionInfo = await db
-      .collection(`rooms/${this.roomId}/drawings`)
-      .get()
-
-    if (!drawingCollectionInfo.empty) {
-      const drawingDoc = drawingCollectionInfo.docs[0].id
-      await db.doc(`rooms/${this.roomId}/drawings/${drawingDoc}`).update({
-        canvasData: [...this.state.canvasData]
-      })
-    }
   }
-  handleMouseUp() {
+  async handleMouseUp() {
     if (this.state.canvasData.length) {
+      const drawingCollectionInfo = await db
+        .collection(`rooms/${this.roomId}/drawings`)
+        .get()
+
+      if (!drawingCollectionInfo.empty) {
+        const drawingDoc = drawingCollectionInfo.docs[0].id
+        await db.doc(`rooms/${this.roomId}/drawings/${drawingDoc}`).update({
+          canvasData: [...this.state.canvasData]
+        })
+      }
       let endDraw = this.state.canvasData[this.state.canvasData.length - 1]
       endDraw.lineEnd = true
       this.setState({
