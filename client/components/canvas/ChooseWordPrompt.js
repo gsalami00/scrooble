@@ -13,51 +13,59 @@ export default class ChooseWordPrompt extends Component {
     this.countdown = this.countdown.bind(this)
   }
   async componentDidMount() {
-    this.countdown()
-    const response = await db
-      .collection('words')
-      .doc('words')
-      .get()
-    const words = await response.data()
-    const wordsArray = Object.values(words)
-    const assureUnequalWords = () => {
-      const firstWord =
-        wordsArray[0][Math.floor(Math.random() * wordsArray[0].length)]
-      const secondWord =
-        wordsArray[0][Math.floor(Math.random() * wordsArray[0].length)]
-      const thirdWord =
-        wordsArray[0][Math.floor(Math.random() * wordsArray[0].length)]
-      if (
-        firstWord !== secondWord &&
-        secondWord !== thirdWord &&
-        thirdWord !== firstWord
-      ) {
-        this.setState({
-          threeWords: [[1, firstWord], [2, secondWord], [3, thirdWord]]
-        })
-        // then, eliminate these three words from possible words for this game (i.e. for this room)! --> what if out of words? then all words come back.
-        // all the words should be pushed to the room in some way, and then eliminated as users go through. keep in mind there are only 345 words.
-      } else {
-        assureUnequalWords()
+    try {
+      this.countdown()
+      const response = await db
+        .collection('words')
+        .doc('words')
+        .get()
+      const words = await response.data()
+      const wordsArray = Object.values(words)
+      const assureUnequalWords = () => {
+        const firstWord =
+          wordsArray[0][Math.floor(Math.random() * wordsArray[0].length)]
+        const secondWord =
+          wordsArray[0][Math.floor(Math.random() * wordsArray[0].length)]
+        const thirdWord =
+          wordsArray[0][Math.floor(Math.random() * wordsArray[0].length)]
+        if (
+          firstWord !== secondWord &&
+          secondWord !== thirdWord &&
+          thirdWord !== firstWord
+        ) {
+          this.setState({
+            threeWords: [[1, firstWord], [2, secondWord], [3, thirdWord]]
+          })
+          // then, eliminate these three words from possible words for this game (i.e. for this room)! --> what if out of words? then all words come back.
+          // all the words should be pushed to the room in some way, and then eliminated as users go through. keep in mind there are only 345 words.
+        } else {
+          assureUnequalWords()
+        }
       }
+      assureUnequalWords()
+    } catch (err) {
+      console.log(err)
     }
-    assureUnequalWords()
   }
   async handleSubmit(word) {
-    event.preventDefault()
-    await db
-      .collection('rooms')
-      .doc('HYHaIxc24e9R9jzNcJA9') // temporarily will have hard-coded room since component is currently outside of game while in development
-      .update({
-        chosenWord: word
-      })
-    const response = await db // this double-checks by grabbing the chosenWord from db instead of just what was clicked
-      .collection('rooms')
-      .doc('HYHaIxc24e9R9jzNcJA9')
-      .get()
-    const chosenWord = response.data().chosenWord
-    alert(`The word has been updated to ${chosenWord}`)
-    // then, tell (set) database that this word is chosenWord
+    try {
+      event.preventDefault()
+      await db
+        .collection('rooms')
+        .doc(this.state.roomId) // temporarily will have hard-coded room since component is currently outside of game while in development
+        .update({
+          chosenWord: word
+        })
+      const response = await db // this double-checks by grabbing the chosenWord from db instead of just what was clicked
+        .collection('rooms')
+        .doc(this.state.roomId)
+        .get()
+      const chosenWord = response.data().chosenWord
+      alert(`The word has been updated to ${chosenWord}`)
+      // then, tell (set) database that this word is chosenWord
+    } catch (err) {
+      console.log(err)
+    }
   }
   countdown() {
     let currTime = this.state.time
