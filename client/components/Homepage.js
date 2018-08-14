@@ -34,12 +34,13 @@ export default class Homepage extends Component {
     // })
     localStorage.setItem('username', this.state.username)
     this.props.history.push('/gameroomfinder')
-
   }
   render() {
     return (
       <div>
-        <h1>Scrooble</h1>
+        <h1>
+          Scrooble (<Link to="/word-prompt">link to choose word</Link>)
+        </h1>
         <div>Quick Play</div>
 
         {/* <Link to="/gameroom">GAMEROOM</Link> */}
