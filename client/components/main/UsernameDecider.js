@@ -19,7 +19,7 @@ export default class UsernameDecider extends Component {
         guessedWord: false,
         username: finalUsername
       })
-      //this.props.history.push(`/${gameRoomId}`)
+      this.props.history.push(`/${gameRoomId}`)
     } catch (err) {
       console.log(err)
     }
@@ -27,28 +27,15 @@ export default class UsernameDecider extends Component {
   async usernameCheck(username) {
     try {
       const gameRoomId = localStorage.getItem('room')
-      const response = await db
-        .collection('rooms')
-        .doc(gameRoomId)
-        .collection('players')
+      const playersCollection = await db
+        .collection(`rooms/${gameRoomId}/players/`)
         .get()
-      console.log('response is', response)
-      const players = await response.docs
-      console.log('players is', players)
-      const data = await response.data()
-      console.log('data is', data)
-      //
-
-      // let docRef = await db.doc(`rooms/${gameRoomId}/players/${username}`)
-      // await docRef.get().then(doc => {
-      //   if (doc.exists) {
-      //     username = `${username}${Math.floor(Math.random() * 100000)}`
-      //     return this.usernameCheck(username)
-      //   } else {
-      //     return username
-      //   }
-      // })
-      // return username
+      const playerArray = []
+      playersCollection.forEach(player => playerArray.push(player.id))
+      while (playerArray.includes(username)) {
+        username = username + Math.floor(Math.random() * 10)
+      }
+      return username
     } catch (err) {
       console.log(err)
     }
