@@ -17,8 +17,6 @@ export default class Canvas extends Component {
     this.username = localStorage.getItem('username')
   }
   async componentDidMount() {
-    const turn = await db.doc(`rooms/${roomId}/players/${username}`).get()
-
     const playersCollectionInfo = await db
       .collection(`rooms/${this.roomId}/players/`)
       .get()
@@ -39,6 +37,10 @@ export default class Canvas extends Component {
         wordToGuess: ''
       })
     }
+    const turnOrderArray = await db
+      .collection(`rooms/${this.roomId}/drawings`)
+      .get()
+    console.log(turnOrderArray.docs[0].data().turnOrder, 'TURN!!!!')
   }
 
   drawCanvas(start, end, strokeColor = 'black') {
@@ -57,10 +59,6 @@ export default class Canvas extends Component {
   }
   async handleMouseMove(event) {
     event.persist()
-    const turnOrderArray = await db
-      .collection(`rooms/${this.roomId}/drawings`)
-      .get()
-    // console.log(turnOrderArray, 'TURN!!!!')
     if (this.state.record) {
       const latestPoint = {
         x: event.pageX - this.theCanvas.offsetLeft,
