@@ -21,7 +21,6 @@ export default class Canvas extends Component {
     const playersCollectionInfo = await db
       .collection(`rooms/${this.roomId}/players/`)
       .get()
-    // console.log('gettin', playersWhoWillDraw.docs[0])
     const turnArray = []
     playersCollectionInfo.forEach(player => turnArray.push(player.id))
     const drawingCollectionInfo = await db
