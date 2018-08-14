@@ -37,25 +37,24 @@ export default class Homepage extends Component {
   }
   render() {
     return (
-      <div>
-        <h1>
-          Scrooble (<Link to="/word-prompt">link to choose word</Link>)
-        </h1>
-        <div>Quick Play</div>
+      <div className="play-card" >
+        <div className="quick-play" >Quick Play</div>
 
         {/* <Link to="/gameroom">GAMEROOM</Link> */}
 
-        <form onSubmit={this.handleSubmit}>
+        <form className="homepage-form" onSubmit={this.handleSubmit}>
           <label htmlFor="username">Player Name</label>
+          <br />
           <input
             name="username"
             type="text"
-            placeholder="Enter Name"
+            // placeholder="Enter Name"
             value={this.state.username}
             onChange={this.handleChange}
+            className="form-input"
           />
           <br />
-          <button type="submit">Play Now</button>
+          <button className="btn" type="submit">Play Now</button>
         </form>
       </div>
     )
