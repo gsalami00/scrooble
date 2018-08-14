@@ -9,7 +9,6 @@ export default class ChooseWordPrompt extends Component {
       time: 12
     }
     this.handleSubmit = this.handleSubmit.bind(this)
-    this.handleOutOfTime = this.handleOutOfTime.bind(this)
   }
   async componentDidMount() {
     this.countdown()
@@ -64,12 +63,6 @@ export default class ChooseWordPrompt extends Component {
         clearInterval(timer)
       }
     }, 1000)
-  }
-  handleOutOfTime() {
-    // if they took too long, then:
-    // - player's myTurn is false (localStorage.getItem('user'))
-    // - this player is removed from room and user is returned to homepage
-    // - myTurn is true for next player (and thus they get this prompt)
   }
   render() {
     return (
