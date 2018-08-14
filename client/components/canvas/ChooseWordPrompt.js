@@ -6,9 +6,11 @@ export default class ChooseWordPrompt extends Component {
     super()
     this.state = {
       threeWords: [],
-      time: 12
+      time: 12,
+      roomId: localStorage.getItem('room')
     }
     this.handleSubmit = this.handleSubmit.bind(this)
+    this.countdown = this.countdown.bind(this)
   }
   async componentDidMount() {
     this.countdown()
@@ -43,7 +45,18 @@ export default class ChooseWordPrompt extends Component {
   }
   async handleSubmit(word) {
     event.preventDefault()
-    alert(`the word is ${word}`)
+    await db
+      .collection('rooms')
+      .doc('HYHaIxc24e9R9jzNcJA9') // temporarily will have hard-coded room since component is currently outside of game while in development
+      .update({
+        chosenWord: word
+      })
+    const response = await db // this double-checks by grabbing the chosenWord from db instead of just what was clicked
+      .collection('rooms')
+      .doc('HYHaIxc24e9R9jzNcJA9')
+      .get()
+    const chosenWord = response.data().chosenWord
+    alert(`The word has been updated to ${chosenWord}`)
     // then, tell (set) database that this word is chosenWord
   }
   countdown() {
@@ -55,7 +68,6 @@ export default class ChooseWordPrompt extends Component {
           time: currTime--
         })
       } else {
-        alert("Thaaat's the timer! Come play again :)")
         localStorage.setItem('username', null)
         localStorage.setItem('room', null)
         // delete player from room -- grab current players, then update without player from localStorage.getItem('user')
