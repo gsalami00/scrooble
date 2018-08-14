@@ -103,7 +103,6 @@ export default class Canvas extends Component {
   handleMouseUp() {
     if (this.state.canvasData.length) {
       let endDraw = this.state.canvasData[this.state.canvasData.length - 1]
-      console.log(this.state.canvasData)
       endDraw.lineEnd = true
       this.setState({
         record: false,
