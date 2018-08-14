@@ -8,7 +8,6 @@ export default class UsernameDecider extends Component {
   }
   async componentDidMount() {
     try {
-      console.log('can anybody hear me?!')
       const gameRoomId = localStorage.getItem('room')
       let username = localStorage.getItem('username')
       const finalUsername = await this.usernameCheck(username)
@@ -20,7 +19,6 @@ export default class UsernameDecider extends Component {
         guessedWord: false,
         username: finalUsername
       })
-      console.log('room is', gameRoomId)
       this.props.history.push(`/${gameRoomId}`)
     } catch (err) {
       console.log(err)
