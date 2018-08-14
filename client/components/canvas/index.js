@@ -13,24 +13,30 @@ export default class Canvas extends Component {
     this.handleMouseDown = this.handleMouseDown.bind(this)
     this.handleMouseUp = this.handleMouseUp.bind(this)
     this.handleMouseMove = this.handleMouseMove.bind(this)
+    this.roomId = 'aQFOGkBUusXJmGP808XR' // REPLACE WITH LINE
+    this.username = localStorage.getItem('username')
   }
   async componentDidMount() {
-    const roomId = 'aQFOGkBUusXJmGP808XR' // REPLACE WITH LINE ABOVE
+    const turn = await db.doc(`rooms/${roomId}/players/${username}`).get()
 
+    const playersCollectionInfo = await db
+      .collection(`rooms/${this.roomId}/players/`)
+      .get()
+    // console.log('gettin', playersWhoWillDraw.docs[0])
+    const turnArray = []
+    playersCollectionInfo.forEach(player => turnArray.push(player.id))
     const drawingCollectionInfo = await db
-      .collection(`rooms/${roomId}/drawings`)
+      .collection(`rooms/${this.roomId}/drawings`)
       .get()
 
-    const drawingCollection = await db.collection(`rooms/${roomId}/drawings`)
-
+    const drawingCollection = await db.collection(
+      `rooms/${this.roomId}/drawings`
+    )
     if (drawingCollectionInfo.empty) {
       drawingCollection.add({
-        canvasData: [this.state]
-      })
-    } else {
-      const drawingDoc = drawingCollectionInfo.docs[0].id
-      await db.doc(`rooms/${roomId}/drawings/${drawingDoc}`).update({
-        canvasData: this.state.canvasData
+        canvasData: [...this.state.canvasData],
+        turnOrder: [...turnArray],
+        wordToGuess: ''
       })
     }
   }
@@ -49,7 +55,12 @@ export default class Canvas extends Component {
       record: true
     })
   }
-  handleMouseMove(event) {
+  async handleMouseMove(event) {
+    event.persist()
+    const turnOrderArray = await db
+      .collection(`rooms/${this.roomId}/drawings`)
+      .get()
+    // console.log(turnOrderArray, 'TURN!!!!')
     if (this.state.record) {
       const latestPoint = {
         x: event.pageX - this.theCanvas.offsetLeft,
@@ -74,6 +85,18 @@ export default class Canvas extends Component {
             point.lineEnd
           )
         }
+      })
+    }
+    const roomId = 'aQFOGkBUusXJmGP808XR' // REPLACE WITH LINE ABOVE
+
+    const drawingCollectionInfo = await db
+      .collection(`rooms/${roomId}/drawings`)
+      .get()
+
+    if (!drawingCollectionInfo.empty) {
+      const drawingDoc = drawingCollectionInfo.docs[0].id
+      await db.doc(`rooms/${roomId}/drawings/${drawingDoc}`).update({
+        canvasData: [...this.state.canvasData]
       })
     }
   }
