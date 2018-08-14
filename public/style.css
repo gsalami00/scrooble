@@ -1,28 +1,48 @@
+form {
+  margin:1vw 0vw;
+}
+
+body {
+  background: linear-gradient(237deg, #40b9ff, #87ffbd);
+  background-size: 400% 400%;
+  animation: AnimationName 15s ease infinite;
+}
+
+@keyframes AnimationName {
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+}
+
 .chatbox {
-  background-color: #b6b6ff;
-  width: 25vw;
+  background-color: #e9f998;
+  width: 20vw;
   float: right;
-  margin: 2vw 2vw;
-  padding: 3vw 3vw;
-  max-height: 70vw;
+  margin: 1vw 1vw;
+  padding: 2vw 2vw;
+  height: 40vw;
+  box-shadow: 0 0 1rem #000000;
 }
 
 .chat-messages {
-  height: 200px;
-  width: 200px;
+  height: 35vw;
+  width: 18vw;
   border: 1px solid black;
   overflow: auto;
   font-family: Verdana;
-  font-size: 11px;
+  font-size: 1.2em;
+  padding: 1vw 1vw;
 }
 
 .lobbybox {
-  background-color: #ffead0;
-  width: 30vw;
+  background-color: #ebff99;
+  width: 15vw;
   float: left;
-  margin: 2vw 2vw;
-  padding: 3vw 3vw;
-  max-height: 70vw;
+  margin: 1vw 1vw;
+  padding: 2vw 2vw;
+  height: 40vw;
+  overflow: auto;
+  box-shadow: 0 0 1rem #000000;
 }
 
 .playercard {
@@ -32,21 +52,40 @@
   border-radius: 10px;
 }
 
-canvas {
-  width: 100%;
-  height: 100%;
-}
-
 .canvas {
-  /* width: 40vw; */
-  /* height: 600px; */
+  width: 49vw;
+  height: 44vw;
   float: left;
-  border: 1px solid black;
+  margin: 1vw 1vw;
+  background-color:white;
+  box-shadow: 0 0 1rem #000000;
 }
 
 .timer {
-  width: 100px;
-  height: 100px;
-  background-color: #52c5ff;
-  clear: both;
+  position: absolute;
+  left: 64vw;
+  top: 3vw;
+}
+
+.timer-text {
+  font-size: 30px;
+  text-align: center;
+  background-color: #ff9393;
+  width: 30px;
+  height: 30px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  border-radius: 50%;
+  padding-left: 20px;
+  padding-right: 20px;
+  line-height: 30px;
+}
+
+.input {
+  width: 16vw;
+  border-radius: 1vw;
+}
+
+* {
+  font-family: 'Lato', sans-serif;
 }

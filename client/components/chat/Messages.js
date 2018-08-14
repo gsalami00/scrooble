@@ -94,6 +94,7 @@ export default class Messages extends Component {
             value={this.state.message}
             onChange={this.handleChange}
             placeholder="Make guesses here!"
+            className="input"
           />
           <button type="Submit">GO</button>
         </form>
