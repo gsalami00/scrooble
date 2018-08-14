@@ -67,7 +67,6 @@ export default class ChooseWordPrompt extends Component {
           time: currTime--
         })
       } else {
-        alert("Thaaat's the timer! Come play again :)")
         localStorage.setItem('username', null)
         localStorage.setItem('room', null)
         // delete player from room -- grab current players, then update without player from localStorage.getItem('user')
