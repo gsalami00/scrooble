@@ -10,6 +10,7 @@ export default class ChooseWordPrompt extends Component {
       roomId: localStorage.getItem('room')
     }
     this.handleSubmit = this.handleSubmit.bind(this)
+    this.countdown = this.countdown.bind(this)
   }
   async componentDidMount() {
     this.countdown()
@@ -52,7 +53,7 @@ export default class ChooseWordPrompt extends Component {
       })
     const response = await db // this double-checks by grabbing the chosenWord from db instead of just what was clicked
       .collection('rooms')
-      .doc('HYHaIxc24e9R9jzNcJA9') // temporarily will have hard-coded room since component is currently outside of game while in development
+      .doc('HYHaIxc24e9R9jzNcJA9')
       .get()
     const chosenWord = response.data().chosenWord
     alert(`The word has been updated to ${chosenWord}`)
