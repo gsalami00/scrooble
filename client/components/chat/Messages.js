@@ -8,8 +8,6 @@ export default class Messages extends Component {
     this.state = {
       message: '',
       messages: [
-        // these cannot be objects like {key: 3, userAndMessage: 'hi'}, because that gives rendering error
-        // [1, 'Welcome to the chat!']
       ],
       roomNumber: '1',
       chatNumber: '1',
@@ -37,11 +35,9 @@ export default class Messages extends Component {
             ])
           })
           if (allMessages.length) {
-            console.log('this.state.messages before', this.state.messages)
             await this.setState({
               messages: allMessages
             })
-            console.log('this.state.messages after', this.state.messages)
           }
           allMessages = []
         })
