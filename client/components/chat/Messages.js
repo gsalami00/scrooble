@@ -9,7 +9,7 @@ export default class Messages extends Component {
       message: '',
       messages: [
         // these cannot be objects like {key: 3, userAndMessage: 'hi'}, because that gives rendering error
-        [1, 'Welcome to the chat!']
+        // [1, 'Welcome to the chat!']
       ],
       roomNumber: '1',
       chatNumber: '1',
@@ -18,22 +18,33 @@ export default class Messages extends Component {
     this.handleChange = this.handleChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
   }
-  async componentDidMount(){
+  async componentDidMount() {
     try {
-      let allMessages = [];
+      let allMessages = []
+      console.log('allMessages is', allMessages)
       let idx = this.state.messages.length
-      this.listener = await db.collection('rooms').doc(this.props.roomId).collection('chats')
-      .onSnapshot(async querySnapshot => {
-        querySnapshot.forEach((col) => {
-          idx++
-          allMessages.push([idx, col.data().username + ': ' + col.data().message])
-        })
-        if (allMessages.length) {
-          await this.setState({
-            messages: [...this.state.messages, allMessages[allMessages.length - 1]]
+      this.listener = await db
+        .collection('rooms')
+        .doc(this.props.roomId)
+        .collection('chats')
+        .onSnapshot(async querySnapshot => {
+          querySnapshot.forEach(col => {
+            idx++
+            console.log('allMessages so far is', allMessages)
+            allMessages.push([
+              idx,
+              col.data().username + ': ' + col.data().message
+            ])
           })
-        }
-      })
+          if (allMessages.length) {
+            console.log('this.state.messages before', this.state.messages)
+            await this.setState({
+              messages: allMessages
+            })
+            console.log('this.state.messages after', this.state.messages)
+          }
+          allMessages = []
+        })
     } catch (err) {
       console.log(err)
     }
@@ -119,7 +130,6 @@ export default class Messages extends Component {
     return (
       <div className="chat">
         <div className="chat-messages" ref={this.scroll}>
-
           {this.state.messages.map(userAndMessage => {
             return (
               <div key={userAndMessage[0]}>
