@@ -23,21 +23,6 @@ export default class Gameroom extends Component {
         .collection('rooms')
         .doc(gameRoomId)
         .get()
-
-      // console.log('CurrentGameDocData:', currentGame)
-      // console.log('CurrentGameDocGETDATA:', currentGameGet.data())
-      const canvasInstance = await db
-        .collection(`rooms/${gameRoomId}/drawings`)
-        .add({})
-      // const playersInGame = await db.doc(`rooms/${gameRoomId}/players/${}`)
-
-      console.log('CurrentGameDocData:', currentGame)
-      console.log('CurrentGameDocGETDATA:', currentGameGet.data())
-      // const canvasInstance = await db
-      //   .collection(`rooms/${gameRoomId}/drawings`)
-      //   .add({})
-      // const playersInGame = await db.doc(`rooms/${gameRoomId}/players/${}`)
-
       const currentGameData = currentGameGet.data()
       let currentTimer = currentGameData.timer
       let currentRound = currentGameData.round
@@ -45,7 +30,6 @@ export default class Gameroom extends Component {
         setInterval(() => {
           if (currentTimer > -1) {
             if (currentTimer === 0) {
-              console.log('Current Round:', currentRound)
               currentGame.update({
                 timer: currentTimer--
               })
@@ -63,7 +47,6 @@ export default class Gameroom extends Component {
     })
   }
   render() {
-    console.log('this.state.username is', this.state.username)
     return (
       <div>
         <div className="timer">

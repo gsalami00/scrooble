@@ -6,16 +6,16 @@ import db from '../../../firestore.js'
 export default class Canvas extends Component {
   constructor() {
     super()
-    this.state = {
-      record: false,
-      canvasData: []
-    }
+
+    this.canvasData = []
+    this.record = false
     this.handleMouseDown = this.handleMouseDown.bind(this)
     this.handleMouseUp = this.handleMouseUp.bind(this)
     this.handleMouseMove = this.handleMouseMove.bind(this)
-    this.roomId = location.pathname.slice(1) // REPLACE WITH LINE
+    this.roomId = location.pathname.slice(1)
     this.username = localStorage.getItem('username')
     this.turnOrderArray = []
+    this.drawingDocId = ''
   }
   async componentDidMount() {
     const playersCollectionInfo = await db
@@ -26,22 +26,21 @@ export default class Canvas extends Component {
     const drawingCollectionInfo = await db
       .collection(`rooms/${this.roomId}/drawings`)
       .get()
-
     const drawingCollection = await db.collection(
       `rooms/${this.roomId}/drawings`
     )
     if (drawingCollectionInfo.empty) {
       drawingCollection.add({
-        canvasData: [...this.state.canvasData],
+        canvasData: [...this.canvasData],
         turnOrder: [...turnArray],
         wordToGuess: ''
       })
     }
-    const drawingsCollectionInfo = await db
-      .collection(`rooms/${this.roomId}/drawings`)
+    this.drawingDocId = drawingCollectionInfo.docs[0].id
+    const drawingInstance = await db
+      .doc(`rooms/${this.roomId}/drawings/${this.drawingDocId}`)
       .get()
-    const turnOrder = drawingsCollectionInfo.docs[0].data().turnOrder
-    this.turnOrderArray = [...turnOrder]
+    this.turnOrderArray = [...drawingInstance.data().turnOrder]
   }
 
   drawCanvas(start, end, strokeColor = 'black') {
@@ -54,13 +53,11 @@ export default class Canvas extends Component {
     ctx.stroke()
   }
   handleMouseDown() {
-    this.setState({
-      record: true
-    })
+    this.record = true
   }
   handleMouseMove(event) {
     event.persist()
-    if (this.state.record) {
+    if (this.record) {
       const latestPoint = {
         x: event.pageX - this.theCanvas.offsetLeft,
         y: event.pageY - this.theCanvas.offsetTop,
@@ -68,10 +65,10 @@ export default class Canvas extends Component {
         lineWidth: 3,
         lineEnd: false
       }
-      this.setState({
-        canvasData: [...this.state.canvasData, latestPoint]
-      })
-      this.state.canvasData.forEach((point, idx, arr) => {
+
+      this.canvasData.push(latestPoint)
+
+      this.canvasData.forEach((point, idx, arr) => {
         if (idx > 0 && idx < arr.length && arr[idx - 1].lineEnd === false) {
           let startX = arr[idx - 1].x
           let startY = arr[idx - 1].y
@@ -88,24 +85,17 @@ export default class Canvas extends Component {
     }
   }
   async handleMouseUp() {
-    if (this.state.canvasData.length) {
-      const drawingCollectionInfo = await db
-        .collection(`rooms/${this.roomId}/drawings`)
-        .get()
-
-      if (!drawingCollectionInfo.empty) {
-        const drawingDoc = drawingCollectionInfo.docs[0].id
-        await db.doc(`rooms/${this.roomId}/drawings/${drawingDoc}`).update({
-          canvasData: [...this.state.canvasData]
-        })
-      }
-      let endDraw = this.state.canvasData[this.state.canvasData.length - 1]
+    if (this.canvasData.length) {
+      let endDraw = this.canvasData[this.canvasData.length - 1]
       endDraw.lineEnd = true
-      this.setState({
-        record: false,
-        canvasData: [...this.state.canvasData, endDraw]
-      })
+      this.canvasData.push(endDraw)
+      await db
+        .doc(`rooms/${this.roomId}/drawings/${this.drawingDocId}`)
+        .update({
+          canvasData: [...this.canvasData]
+        })
     }
+    this.record = false
   }
   render() {
     return (
