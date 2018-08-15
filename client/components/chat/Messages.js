@@ -18,6 +18,29 @@ export default class Messages extends Component {
     this.handleChange = this.handleChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
   }
+  async componentDidMount(){
+    try {
+      let allMessages = [];
+      let idx = this.state.messages.length
+      this.listener = await db.collection('rooms').doc(this.props.roomId).collection('chats')
+      .onSnapshot(async querySnapshot => {
+        querySnapshot.forEach((col) => {
+          idx++
+          allMessages.push([idx, col.data().username + ': ' + col.data().message])
+        })
+        if (allMessages.length) {
+          await this.setState({
+            messages: [...this.state.messages, allMessages[allMessages.length - 1]]
+          })
+        }
+      })
+    } catch (err) {
+      console.log(err)
+    }
+  }
+  componentWillUnmount() {
+    this.listener.unsubscribe()
+  }
   handleChange(event) {
     this.setState({
       [event.target.name]: event.target.value
@@ -96,6 +119,7 @@ export default class Messages extends Component {
     return (
       <div className="chat">
         <div className="chat-messages" ref={this.scroll}>
+
           {this.state.messages.map(userAndMessage => {
             return (
               <div key={userAndMessage[0]}>
