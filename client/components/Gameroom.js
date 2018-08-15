@@ -17,7 +17,7 @@ export default class Gameroom extends Component {
   }
   async componentDidMount() {
     try {
-      const gameRoomId = localStorage.getItem('room') //location.pathname.slice(1)
+      const gameRoomId = localStorage.getItem('room')
       const currentGame = await db.collection('rooms').doc(gameRoomId)
       const currentGameGet = await db
         .collection('rooms')
@@ -40,6 +40,11 @@ export default class Gameroom extends Component {
     } catch (err) {
       console.log(err)
     }
+    // The choose word prompt should appear if it's the player's turn (if the player in localstorage matches the first player in the array)
+    // at the end of the turn, pop the player from the array
+    // how to handle the next turns: componentDidUpdate?
+    // also in the componentDidUpdate: getting chat messages from firebase
+    // Suggestion: when round is 1 more then a multiple of 3, it's a new round
   }
   handleUpdate() {
     this.setState({

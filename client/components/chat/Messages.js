@@ -54,18 +54,18 @@ export default class Messages extends Component {
         } else {
           const userAndMessage = `${username}: ${message}`
           const nextKey = messages[messages.length - 1][0] + 1
-          this.setState({
-            messages: [...messages, [nextKey, userAndMessage]],
-            message: ''
-          })
           await db
             .collection('rooms')
             .doc(this.props.roomId)
             .collection('chats')
             .add({
-              username,
+              username: localStorage.getItem('username'),
               message: this.state.message
             })
+          this.setState({
+            messages: [...messages, [nextKey, userAndMessage]],
+            message: ''
+          })
         }
       } else {
         const {messages} = this.state
