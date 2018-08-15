@@ -18,6 +18,7 @@ export default class Canvas extends Component {
     this.handleMouseUp = this.handleMouseUp.bind(this)
     this.handleMouseMove = this.handleMouseMove.bind(this)
     this.startNewRound = this.startNewRound.bind(this)
+    this.getDrawing = this.getDrawing.bind(this)
   }
   async componentDidMount() {
     const drawingCollectionInfo = await db
@@ -110,14 +111,28 @@ export default class Canvas extends Component {
         })
     }
   }
-  getDrawing() {
+  async getDrawing() {
     let myTurn = this.username === this.turnOrderArray[0]
     if (!myTurn) {
-      setInterval(async () => {
-        await db
-          .doc(`rooms/${this.roomId}/drawings/${this.drawingDocId}`)
-          .onSnapshot(doc => console.log(doc.data().canvasData))
-      }, 5000)
+      await db
+        .doc(`rooms/${this.roomId}/drawings/${this.drawingDocId}`)
+        .onSnapshot(doc => {
+          let canvasData = doc.data().canvasData
+          canvasData.forEach((point, idx, arr) => {
+            if (idx > 0 && idx < arr.length && arr[idx - 1].lineEnd === false) {
+              let startX = arr[idx - 1].x
+              let startY = arr[idx - 1].y
+              let endX = point.x
+              let endY = point.y
+              this.drawCanvas(
+                [startX, startY],
+                [endX, endY],
+                point.strokeColor,
+                point.lineEnd
+              )
+            }
+          })
+        })
     }
   }
   render() {
@@ -127,7 +142,7 @@ export default class Canvas extends Component {
         onMouseMove={this.handleMouseMove}
         onMouseUp={this.handleMouseUp}
         onMouseOut={this.handleMouseUp}
-        onLoad={this.getDrawing}
+        onClick={this.getDrawing}
       >
         <canvas
           ref={canvas => (this.theCanvas = canvas)}
