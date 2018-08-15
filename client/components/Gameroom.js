@@ -23,9 +23,6 @@ export default class Gameroom extends Component {
         .collection('rooms')
         .doc(gameRoomId)
         .get()
-      const canvasInstance = await db
-        .collection(`rooms/${gameRoomId}/drawings`)
-        .add({})
       const currentGameData = currentGameGet.data()
       let currentTimer = currentGameData.timer
       let currentRound = currentGameData.round
@@ -33,7 +30,6 @@ export default class Gameroom extends Component {
         setInterval(() => {
           if (currentTimer > -1) {
             if (currentTimer === 0) {
-              console.log('Current Round:', currentRound)
               currentGame.update({
                 timer: currentTimer--
               })
@@ -56,7 +52,6 @@ export default class Gameroom extends Component {
     })
   }
   render() {
-    console.log('this.state.username is', this.state.username)
     return (
       <div>
         <div className="timer">

@@ -40,6 +40,7 @@ export default class Homepage extends Component {
             value={this.state.username}
             onChange={this.handleChange}
             className="form-input"
+            required
           />
           <br />
           <button className="btn" type="submit">Play Now</button>
