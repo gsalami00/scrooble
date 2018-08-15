@@ -19,21 +19,24 @@ export default class Messages extends Component {
     this.handleSubmit = this.handleSubmit.bind(this)
   }
   async componentDidMount(){
-    console.log('component did mount')
-    let allMessages = [];
-    let idx = this.state.messages.length
-    this.listener = await db.collection('rooms').doc(this.props.roomId).collection('chats')
-    .onSnapshot(async querySnapshot => {
-      querySnapshot.forEach((col) => {
-        idx++
-        allMessages.push([idx, col.data().username + ': ' + col.data().message])
-      })
-      if (allMessages.length) {
-        await this.setState({
-          messages: [...this.state.messages, allMessages[allMessages.length - 1]]
+    try {
+      let allMessages = [];
+      let idx = this.state.messages.length
+      this.listener = await db.collection('rooms').doc(this.props.roomId).collection('chats')
+      .onSnapshot(async querySnapshot => {
+        querySnapshot.forEach((col) => {
+          idx++
+          allMessages.push([idx, col.data().username + ': ' + col.data().message])
         })
-      }
-    })
+        if (allMessages.length) {
+          await this.setState({
+            messages: [...this.state.messages, allMessages[allMessages.length - 1]]
+          })
+        }
+      })
+    } catch (err) {
+      console.log(err)
+    }
   }
   componentWillUnmount() {
     this.listener.unsubscribe()
@@ -113,7 +116,6 @@ export default class Messages extends Component {
     }
   }
   render() {
-    console.log('this.state.messages is', this.state.messages)
     return (
       <div className="chat">
         <div className="chat-messages" ref={this.scroll}>
