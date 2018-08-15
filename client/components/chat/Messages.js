@@ -9,21 +9,14 @@ export default class Messages extends Component {
       message: '',
       messages: [
         // these cannot be objects like {key: 3, userAndMessage: 'hi'}, because that gives rendering error
-        [1, 'c00l_username: hello chatroom!!'],
-        [2, 'otherUzer: um hi']
+        [1, 'Welcome to the chat!']
       ],
       roomNumber: '1',
       chatNumber: '1',
-      username: '',
-      chosenWord: '' // this should exist in Room instance
+      guessedWord: false
     }
     this.handleChange = this.handleChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
-  }
-  componentDidMount() {
-    this.setState({
-      username: this.props.username
-    })
   }
   handleChange(event) {
     this.setState({
@@ -31,49 +24,75 @@ export default class Messages extends Component {
     })
   }
   async handleSubmit(event) {
-    event.preventDefault()
-    let {username, message, messages, chosenWord} = this.state // let instead of const because we check message.toLowerCase()
-    if (message && chosenWord === message.toLowerCase()) {
-      // IF CORRECT WORD (making sure not empty string, then making sure same as chosenWord)
-      await db
-        .collection('rooms')
-        .doc(this.props.roomId)
-        .collection('chats')
-        .add({
-          message: `${username} guessed the word!`
+    try {
+      event.preventDefault()
+      if (!this.state.guessedWord) {
+        const username = localStorage.getItem('username')
+        const roomId = localStorage.getItem('room')
+        const response = await db
+          .collection('rooms')
+          .doc(roomId)
+          .get()
+        const chosenWord = await response.data().chosenWord
+        let {message, messages} = this.state // let instead of const because we check message.toLowerCase()
+        if (message && chosenWord === message.toLowerCase()) {
+          // IF CORRECT WORD (making sure not empty string, then making sure same as chosenWord)
+          await db
+            .collection('rooms')
+            .doc(this.props.roomId)
+            .collection('chats')
+            .add({
+              message: `${username} guessed the word!`
+            })
+          const nextKey = messages[messages.length - 1][0] + 1
+          this.setState({
+            messages: [...messages, [nextKey, `${username} guessed the word!`]],
+            message: '',
+            guessedWord: true
+          })
+          // end of turn, loop through each player and make guessed equal to false
+        } else {
+          const userAndMessage = `${username}: ${message}`
+          const nextKey = messages[messages.length - 1][0] + 1
+          this.setState({
+            messages: [...messages, [nextKey, userAndMessage]],
+            message: ''
+          })
+          await db
+            .collection('rooms')
+            .doc(this.props.roomId)
+            .collection('chats')
+            .add({
+              username,
+              message: this.state.message
+            })
+        }
+      } else {
+        const {messages} = this.state
+        const username = localStorage.getItem('username')
+        const nextKey = messages[messages.length - 1][0] + 1
+        this.setState({
+          messages: [
+            ...messages,
+            [nextKey, `You already guessed the word! :D`]
+          ],
+          message: ''
         })
-      // await db
-      //   .collection('rooms')
-      //   .doc(this.props.roomId)
-      //   .collection('players')
-      //   .
-      // need ID of this user we are being right now so we're updating the correct one!
-      // make guessed property true
-      // if guessed property true, disable chat input for remainder of round
-      // end of turn, loop through each player and make guessed equal to false
-    } else {
-      const userAndMessage = `${username}: ${message}`
-      const nextKey = messages[messages.length - 1][0] + 1
-      this.setState({
-        messages: [...this.state.messages, [nextKey, userAndMessage]],
-        message: ''
-      })
-      await db
-        // assign player to room
-        .collection('rooms')
-        .doc(this.props.roomId)
-        .collection('chats')
-        .add({
-          username: this.state.username,
-          message: this.state.message
-        })
+        await db
+          .collection('rooms')
+          .doc(this.props.roomId)
+          .collection('chats')
+          .add({
+            username,
+            message: this.state.message
+          })
+      }
+      this.scroll.current.scrollTop = this.scroll.current.scrollHeight
+    } catch (err) {
+      console.log(err)
     }
-    this.scroll.current.scrollTop = this.scroll.current.scrollHeight
   }
   render() {
-    // CSS to do:
-    // - make username and colon bold
-    // - font should be arial or sans-serif and small
     return (
       <div className="chat">
         <div className="chat-messages" ref={this.scroll}>
