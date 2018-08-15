@@ -97,7 +97,8 @@ export default class Canvas extends Component {
     }
   }
   async handleMouseUp() {
-    if (this.canvasData.length) {
+    let myTurn = this.username === this.turnOrderArray[0]
+    if (this.canvasData.length && myTurn) {
       let endDraw = this.canvasData[this.canvasData.length - 1]
       endDraw.lineEnd = true
       this.canvasData.push(endDraw)
@@ -109,6 +110,16 @@ export default class Canvas extends Component {
         })
     }
   }
+  getDrawing() {
+    let myTurn = this.username === this.turnOrderArray[0]
+    if (!myTurn) {
+      setInterval(async () => {
+        await db
+          .doc(`rooms/${this.roomId}/drawings/${this.drawingDocId}`)
+          .onSnapshot(doc => console.log(doc.data().canvasData))
+      }, 5000)
+    }
+  }
   render() {
     return (
       <div
@@ -116,6 +127,7 @@ export default class Canvas extends Component {
         onMouseMove={this.handleMouseMove}
         onMouseUp={this.handleMouseUp}
         onMouseOut={this.handleMouseUp}
+        onLoad={this.getDrawing}
       >
         <canvas
           ref={canvas => (this.theCanvas = canvas)}
