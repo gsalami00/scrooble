@@ -13,6 +13,7 @@ export default class Canvas extends Component {
     this.username = localStorage.getItem('username')
     this.turnOrderArray = []
     this.drawingDocId = ''
+    this.time = ''
 
     this.handleMouseDown = this.handleMouseDown.bind(this)
     this.handleMouseUp = this.handleMouseUp.bind(this)
@@ -32,6 +33,9 @@ export default class Canvas extends Component {
       })
     }
     this.drawingDocId = drawingCollectionInfo.docs[0].id
+
+    const roomInstanceInfo = await db.doc(`rooms/${this.roomId}`).get()
+    this.time = roomInstanceInfo.data().timer
     if (!drawingCollectionInfo.docs[0].data().turnOrder) this.startNewRound()
   }
   async startNewRound() {
@@ -47,8 +51,8 @@ export default class Canvas extends Component {
       .doc(`rooms/${this.roomId}/drawings/${this.drawingDocId}`)
       .get()
     this.turnOrderArray = [...drawingInstance.data().turnOrder]
+    this.getTheTime()
   }
-
   drawCanvas(start, end, strokeColor = 'black') {
     const ctx = this.theCanvas.getContext('2d')
     ctx.beginPath()
@@ -57,6 +61,15 @@ export default class Canvas extends Component {
     ctx.lineTo(...end)
     ctx.closePath()
     ctx.stroke()
+  }
+  async getTheTime() {
+    let milliseconds = this.time * 1000
+    setTimeout(() => {
+      this.turnOrderArray.shift()
+    }, milliseconds)
+    await db.doc(`rooms/${this.roomId}/drawings/${this.drawingDocId}`).update({
+      turnOrder: [...this.turnOrderArray]
+    })
   }
   handleMouseDown() {
     let myTurn = this.username === this.turnOrderArray[0]
@@ -144,6 +157,11 @@ export default class Canvas extends Component {
         onMouseOut={this.handleMouseUp}
         onClick={this.getDrawing}
       >
+        {/* {this.turnOrderArray[0] === this.username ? null : (
+          <button className="join-btn" type="button" onClick={this.getDrawing}>
+            Join
+          </button>
+        )} */}
         <canvas
           ref={canvas => (this.theCanvas = canvas)}
           height={500}
