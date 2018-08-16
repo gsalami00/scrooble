@@ -30,7 +30,7 @@ export default class Homepage extends Component {
   render() {
     return (
       <div className="play-card" >
-        <div className="quick-play" >Quick Play</div>
+        <img src={window.location.origin + '/scrooble-logo.png'} className="logo" />
         <form className="homepage-form" onSubmit={this.handleSubmit}>
           <label htmlFor="username">Player Name</label>
           <br />
