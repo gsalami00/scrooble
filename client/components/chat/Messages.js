@@ -144,7 +144,7 @@ export default class Messages extends Component {
         this.setState({
           messages: [
             ...messages,
-            [nextKey, `You already guessed the word! :D`]
+            [nextKey, `You already guessed the word! 😄`]
           ],
           message: ''
         })
