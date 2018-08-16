@@ -20,7 +20,7 @@ export default class Messages extends Component {
       let idx = this.state.messages.length
       this.listener = await db
         .collection('rooms')
-        .doc(this.props.roomId)
+        .doc(this.roomId)
         .collection('chats')
         .onSnapshot(async querySnapshot => {
           querySnapshot.forEach(col => {

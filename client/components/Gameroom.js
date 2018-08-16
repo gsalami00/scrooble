@@ -52,7 +52,7 @@ export default class Gameroom extends Component {
           <Timer />
         </div>
         <div className="lobbybox">
-          <Lobby roomId={this.props.match.params.gameroom} />
+          <Lobby />
         </div>
         <div className="canvas">
           <Canvas canvasData={this.state.canvasData} />
