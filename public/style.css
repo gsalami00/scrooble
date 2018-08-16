@@ -134,8 +134,10 @@ body {
   background-position: right center;
 }
 
-logo {
+.logo {
   margin: -1vw 4vw;
+  width: 30vw;
+  height: 15vw;
 }
 
 * {
