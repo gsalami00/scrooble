@@ -104,6 +104,20 @@ export default class Messages extends Component {
             message: '',
             guessedWord: true
           })
+          const documentNumber = messages.length + 1
+          await db
+            .collection('rooms')
+            .doc(roomId)
+            .collection('chats')
+            .doc(documentNumber.toString())
+            .set({
+              username: localStorage.getItem('username'),
+              message: `${localStorage.getItem('username')} guessed the word!`
+            })
+          this.setState({
+            messages: [...messages, [nextKey, userAndMessage]],
+            message: ''
+          })
           // end of turn, loop through each player and make guessed equal to false
         } else {
           const userAndMessage = `${username}: ${message}`
