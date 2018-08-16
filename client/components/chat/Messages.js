@@ -127,7 +127,7 @@ export default class Messages extends Component {
             .collection('rooms')
             .doc(roomId)
             .collection('chats')
-            .doc(documentNumber)
+            .doc(documentNumber.toString())
             .set({
               username: localStorage.getItem('username'),
               message: this.state.message
