@@ -104,12 +104,12 @@ export default class Messages extends Component {
             message: '',
             guessedWord: true
           })
-          const documentNumber = (messages.length + 1).toString()
+          const documentNumber = messages.length + 1
           await db
             .collection('rooms')
             .doc(roomId)
             .collection('chats')
-            .doc(documentNumber)
+            .doc(documentNumber.toString())
             .set({
               username: localStorage.getItem('username'),
               message: `${localStorage.getItem('username')} guessed the word!`
