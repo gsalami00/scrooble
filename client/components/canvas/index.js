@@ -20,6 +20,7 @@ export default class Canvas extends Component {
     this.handleMouseMove = this.handleMouseMove.bind(this)
     this.startNewRound = this.startNewRound.bind(this)
     this.getDrawing = this.getDrawing.bind(this)
+    this.startTurnCountdown = this.startTurnCountdown.bind(this)
   }
   async componentDidMount() {
     const drawingCollectionInfo = await db
@@ -27,16 +28,14 @@ export default class Canvas extends Component {
       .get()
     if (drawingCollectionInfo.empty) {
       await db.collection(`rooms/${this.roomId}/drawings`).add({
-        canvasData: [],
-        turnOrder: [],
-        wordToGuess: ''
+        canvasData: []
       })
     }
     this.drawingDocId = drawingCollectionInfo.docs[0].id
 
     const roomInstanceInfo = await db.doc(`rooms/${this.roomId}`).get()
     this.time = roomInstanceInfo.data().timer
-    if (!drawingCollectionInfo.docs[0].data().turnOrder) this.startNewRound()
+    if (!roomInstanceInfo.data().turnOrder) this.startNewRound()
   }
   async startNewRound() {
     const playersCollectionInfo = await db
@@ -44,14 +43,12 @@ export default class Canvas extends Component {
       .get()
     const turnArray = []
     playersCollectionInfo.forEach(player => turnArray.push(player.id))
-    await db.doc(`rooms/${this.roomId}/drawings/${this.drawingDocId}`).update({
+    await db.doc(`rooms/${this.roomId}`).update({
       turnOrder: [...turnArray]
     })
-    const drawingInstance = await db
-      .doc(`rooms/${this.roomId}/drawings/${this.drawingDocId}`)
-      .get()
-    this.turnOrderArray = [...drawingInstance.data().turnOrder]
-    this.getTheTime()
+    const roomInstanceInfo = await db.doc(`rooms/${this.roomId}`).get()
+    this.turnOrderArray = [...roomInstanceInfo.data().turnOrder]
+    this.startTurnCountdown()
   }
   drawCanvas(start, end, strokeColor = 'black') {
     const ctx = this.theCanvas.getContext('2d')
@@ -62,12 +59,12 @@ export default class Canvas extends Component {
     ctx.closePath()
     ctx.stroke()
   }
-  async getTheTime() {
+  async startTurnCountdown() {
     let milliseconds = this.time * 1000
     setTimeout(() => {
       this.turnOrderArray.shift()
     }, milliseconds)
-    await db.doc(`rooms/${this.roomId}/drawings/${this.drawingDocId}`).update({
+    await db.doc(`rooms/${this.roomId}`).update({
       turnOrder: [...this.turnOrderArray]
     })
   }

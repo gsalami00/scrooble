@@ -13,7 +13,6 @@ export default class Gameroom extends Component {
       username: localStorage.getItem('username'),
       canvasData: []
     }
-    this.handleUpdate = this.handleUpdate.bind(this)
   }
   async componentDidMount() {
     try {
@@ -45,11 +44,6 @@ export default class Gameroom extends Component {
     // how to handle the next turns: componentDidUpdate?
     // also in the componentDidUpdate: getting chat messages from firebase
     // Suggestion: when round is 1 more then a multiple of 3, it's a new round
-  }
-  handleUpdate() {
-    this.setState({
-      canvasData: [1, 2, 3]
-    })
   }
   render() {
     return (
