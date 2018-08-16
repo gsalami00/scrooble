@@ -27,7 +27,7 @@ export default class GameroomFinder extends Component {
           playerCount: 1,
           isPrivate: false,
           round: 1,
-          timer: 30,
+          timer: 60,
           turnOrder: [],
           chosenWord: ''
         })
