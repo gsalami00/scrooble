@@ -11,26 +11,32 @@ export default class Timer extends Component {
       start: false
     }
     this.countdown = this.countdown.bind(this)
+    this.time = -Infinity
+    this.roomId = location.pathname.slice(1)
+    this.roomInstanceInfo = ''
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     this.countdown()
+    this.roomInstanceInfo = await db.doc(`rooms/${this.roomId}`).get()
+    this.time = this.roomInstanceInfo.data().timer
   }
 
   countdown() {
-    let currTime = this.state.time
-    setInterval(() => {
-      if (currTime > -1) {
+    setInterval(async () => {
+      if (this.time > 0) {
+        this.time--
+        await db.doc(`rooms/${this.roomId}`).update({
+          timer: this.time
+        })
         this.setState({
-          time: currTime--
+          time: this.time
         })
       }
     }, 1000)
   }
 
   render() {
-    return <div className="timer-text">
-    {this.state.time}
-    </div>
+    return <div className="timer-text">{this.state.time}</div>
   }
 }

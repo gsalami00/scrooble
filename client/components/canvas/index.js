@@ -14,6 +14,7 @@ export default class Canvas extends Component {
     this.turnOrderArray = []
     this.drawingDocId = ''
     this.time = ''
+    this.roomInstanceInfo = ''
 
     this.handleMouseDown = this.handleMouseDown.bind(this)
     this.handleMouseUp = this.handleMouseUp.bind(this)
@@ -33,9 +34,9 @@ export default class Canvas extends Component {
     }
     this.drawingDocId = drawingCollectionInfo.docs[0].id
 
-    const roomInstanceInfo = await db.doc(`rooms/${this.roomId}`).get()
-    this.time = roomInstanceInfo.data().timer
-    if (!roomInstanceInfo.data().turnOrder) this.startNewRound()
+    this.roomInstanceInfo = await db.doc(`rooms/${this.roomId}`).get()
+    this.time = this.roomInstanceInfo.data().timer
+    if (!this.roomInstanceInfo.data().turnOrder) this.startNewRound()
   }
   async startNewRound() {
     const playersCollectionInfo = await db
@@ -46,9 +47,8 @@ export default class Canvas extends Component {
     await db.doc(`rooms/${this.roomId}`).update({
       turnOrder: [...turnArray]
     })
-    const roomInstanceInfo = await db.doc(`rooms/${this.roomId}`).get()
-    this.turnOrderArray = [...roomInstanceInfo.data().turnOrder]
-    this.startTurnCountdown()
+    this.turnOrderArray = [...this.roomInstanceInfo.data().turnOrder]
+    await this.startTurnCountdown()
   }
   drawCanvas(start, end, strokeColor = 'black') {
     const ctx = this.theCanvas.getContext('2d')
@@ -59,14 +59,15 @@ export default class Canvas extends Component {
     ctx.closePath()
     ctx.stroke()
   }
-  async startTurnCountdown() {
+  startTurnCountdown() {
     let milliseconds = this.time * 1000
-    setTimeout(() => {
+    setTimeout(async () => {
       this.turnOrderArray.shift()
+      await db.doc(`rooms/${this.roomId}`).update({
+        turnOrder: [...this.turnOrderArray]
+      })
     }, milliseconds)
-    await db.doc(`rooms/${this.roomId}`).update({
-      turnOrder: [...this.turnOrderArray]
-    })
+    if (!this.roomInstanceInfo.data().turnOrder) this.startNewRound()
   }
   handleMouseDown() {
     let myTurn = this.username === this.turnOrderArray[0]
