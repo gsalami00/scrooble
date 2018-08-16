@@ -77,13 +77,26 @@ export default class Messages extends Component {
         let {message, messages} = this.state // let instead of const because we check message.toLowerCase()
         if (message && chosenWord === message.toLowerCase()) {
           // IF CORRECT WORD (making sure not empty string, then making sure same as chosenWord)
+          const responsePlayer = await db
+            .collection('rooms')
+            .doc(roomId)
+            .collection('players')
+            .doc(username)
+            .get()
+          const score = await responsePlayer.data().score
+          const room = await db
+            .collection('rooms')
+            .doc(roomId)
+            .get()
+          const timeLeft = await room.data().timer
           await db
             .collection('rooms')
             .doc(roomId)
             .collection('players')
             .doc(username)
             .update({
-              guessedWord: true
+              guessedWord: true,
+              score: score + timeLeft * 10
             })
           const nextKey = messages[messages.length - 1][0] + 1
           this.setState({
