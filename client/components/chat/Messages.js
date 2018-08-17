@@ -187,9 +187,9 @@ export default class Messages extends Component {
     return (
       <div className="chat">
         <div className="chat-messages" ref={this.scroll}>
-          {stateMessages.map(userAndMessage => {
+          {stateMessages.map((userAndMessage, idx) => {
             return (
-              <div>
+              <div key={idx} >
                 {userAndMessage}
                 {'\n'}
               </div>
