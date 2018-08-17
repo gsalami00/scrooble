@@ -22,6 +22,7 @@ export default class Canvas extends Component {
     this.startNewRound = this.startNewRound.bind(this)
     this.getDrawing = this.getDrawing.bind(this)
     this.startTurnCountdown = this.startTurnCountdown.bind(this)
+    this.ifNextPlayerNotHereRemove = this.ifNextPlayerNotHereRemove.bind(this)
   }
   async componentDidMount() {
     const drawingCollectionInfo = await db
@@ -36,7 +37,13 @@ export default class Canvas extends Component {
 
     this.roomInstanceInfo = await db.doc(`rooms/${this.roomId}`).get()
     this.time = this.roomInstanceInfo.data().timer
-    if (!this.roomInstanceInfo.data().turnOrder) this.startNewRound()
+
+    if (
+      this.roomInstanceInfo.data().turnOrder === undefined ||
+      !this.roomInstanceInfo.data().turnOrder.length
+    ) {
+      this.startNewRound()
+    }
   }
   async startNewRound() {
     const playersCollectionInfo = await db
@@ -47,8 +54,8 @@ export default class Canvas extends Component {
     await db.doc(`rooms/${this.roomId}`).update({
       turnOrder: [...turnArray]
     })
-    this.turnOrderArray = [...this.roomInstanceInfo.data().turnOrder]
-    await this.startTurnCountdown()
+    const updatedRoomInstanceInfo = await db.doc(`rooms/${this.roomId}`).get()
+    this.turnOrderArray = [...updatedRoomInstanceInfo.data().turnOrder]
   }
   drawCanvas(start, end, strokeColor = 'black') {
     const ctx = this.theCanvas.getContext('2d')
@@ -63,21 +70,29 @@ export default class Canvas extends Component {
     let milliseconds = this.time * 1000
     setTimeout(async () => {
       this.turnOrderArray.shift()
+      await this.ifNextPlayerNotHereRemove()
       await db.doc(`rooms/${this.roomId}`).update({
         turnOrder: [...this.turnOrderArray]
       })
     }, milliseconds)
-    if (!this.roomInstanceInfo.data().turnOrder) this.startNewRound()
+    // if (!this.roomInstanceInfo.data().turnOrder.length) this.startNewRound()
+  }
+  async ifNextPlayerNotHereRemove() {
+    const roomInstanceUpdated = await db
+      .collection(`rooms/${this.roomId}/players`)
+      .get()
+    let playersHere = {}
+    roomInstanceUpdated.forEach(player => {
+      playersHere[player.id] = player.id
+    })
+    if (!playersHere.hasOwnProperty(this.turnOrderArray[0])) {
+      this.turnOrderArray.shift()
+      this.ifNotHereRemove()
+    }
   }
   handleMouseDown() {
     let myTurn = this.username === this.turnOrderArray[0]
     if (myTurn) this.record = true
-    console.log(
-      'TURN, username, this.turnOrderArray',
-      myTurn,
-      this.username,
-      this.turnOrderArray[0]
-    )
   }
   handleMouseMove(event) {
     event.persist()

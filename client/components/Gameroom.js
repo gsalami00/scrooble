@@ -13,18 +13,34 @@ export default class Gameroom extends Component {
       username: localStorage.getItem('username'),
       canvasData: []
     }
+    this.roomId = location.pathname.slice(1)
+    this.roomInstanceInfo = ''
+    this.roomInstance = ''
+    this.leaveGame = this.leaveGame.bind(this)
+    this.decrementPlayerCount = this.decrementPlayerCount.bind(this)
+    // this.getUpdatedRoomInstance = this.getUpdatedRoomInstance.bind(this)
   }
   async componentDidMount() {
     try {
-      const gameRoomId = localStorage.getItem('room')
-      const currentGame = await db.collection('rooms').doc(gameRoomId)
-      const currentGameGet = await db
+      window.onbeforeunload = async event => {
+        event.preventDefault()
+        // this.roomInstance = await db
+        //   .doc(`rooms/${location.pathname.slice(1)}`)
+        //   .get()
+        await db
+          .doc(`rooms/${this.roomId}/players/${this.state.username}`)
+          .delete()
+        await this.decrementPlayerCount()
+        event.returnValue = `\o/`
+      }
+
+      const currentGame = await db.collection('rooms').doc(this.roomId)
+      this.roomInstanceInfo = await db
         .collection('rooms')
-        .doc(gameRoomId)
+        .doc(this.roomId)
         .get()
-      const currentGameData = currentGameGet.data()
+      const currentGameData = this.roomInstanceInfo.data()
       let currentTimer = currentGameData.timer
-      let currentRound = currentGameData.round
       if (currentGameData.playerCount > 0) {
         setInterval(() => {
           if (currentTimer > -1) {
@@ -44,6 +60,48 @@ export default class Gameroom extends Component {
     // how to handle the next turns: componentDidUpdate?
     // also in the componentDidUpdate: getting chat messages from firebase
     // Suggestion: when round is 1 more then a multiple of 3, it's a new round
+  }
+  async decrementPlayerCount() {
+    const playersCollectionInfo = await db
+      .collection(`rooms/${this.roomId}/players`)
+      .get()
+
+    // const dbPlayerCount = this.roomInstance.data().playerCount
+    // const subtractedCount = dbPlayerCount - 1
+    // await db.doc(`rooms/${this.roomId}`).update({
+    //   playerCount: subtractedCount
+    // })
+  }
+  async leaveGame(event) {
+    event.preventDefault()
+    // this.getUpdatedRoomInstance()
+    // const dbPlayerCount = this.getUpdatedRoomInstance.data().playerCount
+
+    // await db.doc(`rooms/${this.roomId}`).update({
+    //   playerCount: dbPlayerCount - 1
+    // })
+
+    await db.doc(`rooms/${this.roomId}/players/${this.state.username}`).delete()
+
+    // console.log('roominstanceinfo', this.roomInstanceInfo.data())
+    // const updatedRoomInstanceInfo = await db
+    //   .collection('rooms')
+    //   .doc(this.roomId)
+    //   .get()
+    // let turnOrderArray = updatedRoomInstanceInfo.data().turnOrder
+    // if (turnOrderArray.includes(this.state.username)) {
+    //   const idx = turnOrderArray.indexOf(this.state.username)
+    //   console.log(turnOrderArray, 'TURN ORDER ARRAY')
+    //   turnOrderArray.splice(idx, 1)
+    //   console.log(turnOrderArray, 'SPLICED')
+    //   await db.doc(`rooms/${this.roomId}`).update({
+    //     turnOrder: [...turnOrderArray]
+    //   })
+    // }
+    event.returnValue = `\o/`
+  }
+  componentWillUnmount() {
+    // window.removeEventListener('onbeforeunload', this.leaveGame)
   }
   render() {
     return (
