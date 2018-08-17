@@ -8,7 +8,7 @@ export default class Messages extends Component {
     this.scroll = React.createRef()
     this.state = {
       message: '',
-      messages: [[0]],
+      messages: [[0, '']],
       guessedWord: false
     }
     this.handleChange = this.handleChange.bind(this)
@@ -18,6 +18,7 @@ export default class Messages extends Component {
     try {
       let allMessages = []
       let idx = this.state.messages.length
+      const {messages} = this.state
       this.listener = await db
         .collection('rooms')
         .doc(this.roomId)
@@ -30,10 +31,13 @@ export default class Messages extends Component {
               col.data().username + ': ' + col.data().message
             ])
           })
+          const nextKey = messages[messages.length - 1][0] + 1
           if (allMessages.length) {
+            const combine = [nextKey, allMessages]
             await this.setState({
-              messages: allMessages
+              messages: [...messages, combine]
             })
+            console.log('this.state.messages is', this.state.messages)
           }
           allMessages = []
         })
@@ -49,14 +53,6 @@ export default class Messages extends Component {
       .collection('players')
       .doc(localStorage.getItem('username'))
       .delete()
-    console.log(
-      'user is',
-      await db
-        .collection('rooms')
-        .doc(localStorage.getItem('room'))
-        .collection('players')
-        .doc(localStorage.getItem('username'))
-    )
   }
   handleChange(event) {
     this.setState({
@@ -66,15 +62,15 @@ export default class Messages extends Component {
   async handleSubmit(event) {
     try {
       event.preventDefault()
+      const username = localStorage.getItem('username')
+      const roomId = this.roomId
+      let {message, messages} = this.state
       if (!this.state.guessedWord) {
-        const username = localStorage.getItem('username')
-        const roomId = this.roomId
-        const responseChosenWord = await db
+        const room = await db
           .collection('rooms')
           .doc(roomId)
           .get()
-        const chosenWord = await responseChosenWord.data().chosenWord
-        let {message, messages} = this.state // let instead of const because we check message.toLowerCase()
+        const chosenWord = await room.data().chosenWord
         if (message && chosenWord === message.toLowerCase()) {
           // IF CORRECT WORD (making sure not empty string, then making sure same as chosenWord)
           const responsePlayer = await db
@@ -84,10 +80,6 @@ export default class Messages extends Component {
             .doc(username)
             .get()
           const score = await responsePlayer.data().score
-          const room = await db
-            .collection('rooms')
-            .doc(roomId)
-            .get()
           const timeLeft = await room.data().timer
           await db
             .collection('rooms')
@@ -104,33 +96,52 @@ export default class Messages extends Component {
             message: '',
             guessedWord: true
           })
-          const documentNumber = messages.length + 1
+          const documentNumberResponse = await db
+            .collection('rooms')
+            .doc(this.roomId)
+            .get()
+          const documentNumber = documentNumberResponse.data().messageCount
           await db
             .collection('rooms')
-            .doc(roomId)
-            .collection('chats')
-            .doc(documentNumber.toString())
+            .doc(this.roomId)
+            .doc((documentNumber + 1).toString())
             .set({
-              username: localStorage.getItem('username'),
-              message: `${localStorage.getItem('username')} guessed the word!`
+              username,
+              message
+            })
+          await db
+            .collection('rooms')
+            .doc(this.roomId)
+            .update({
+              messageCount: documentNumber + 1
             })
           this.setState({
-            messages: [...messages, [nextKey, userAndMessage]],
+            messages: [...messages, [nextKey, `${username} guessed the word!`]],
             message: ''
           })
           // end of turn, loop through each player and make guessed equal to false
         } else {
           const userAndMessage = `${username}: ${message}`
           const nextKey = messages[messages.length - 1][0] + 1
-          const documentNumber = messages.length + 1
+          const documentNumberResponse = await db
+            .collection('rooms')
+            .doc(this.roomId)
+            .get()
+          const documentNumber = documentNumberResponse.data().messageCount
           await db
             .collection('rooms')
-            .doc(roomId)
+            .doc(this.roomId)
             .collection('chats')
-            .doc(documentNumber.toString())
+            .doc((documentNumber + 1).toString())
             .set({
-              username: localStorage.getItem('username'),
-              message: this.state.message
+              username,
+              message
+            })
+          await db
+            .collection('rooms')
+            .doc(this.roomId)
+            .update({
+              messageCount: documentNumber + 1
             })
           this.setState({
             messages: [...messages, [nextKey, userAndMessage]],
@@ -138,8 +149,7 @@ export default class Messages extends Component {
           })
         }
       } else {
-        const {message, messages} = this.state
-        const username = localStorage.getItem('username')
+        // if they have already guessed and trying to type more during this 'turn'
         const nextKey = messages[messages.length - 1][0] + 1
         this.setState({
           messages: [
@@ -148,14 +158,26 @@ export default class Messages extends Component {
           ],
           message: ''
         })
+        const documentNumberResponse = await db
+          .collection('rooms')
+          .doc(this.roomId)
+          .collection('chats')
+          .get()
+        const documentNumber = documentNumberResponse.data().messageCount
         await db
           .collection('rooms')
-          .doc(this.props.roomId)
+          .doc(this.roomId)
           .collection('chats')
-          .doc((messages.length + 1).toString())
-          .add({
+          .doc((documentNumber + 1).toString())
+          .set({
             username,
             message
+          })
+        await db
+          .collection('rooms')
+          .doc(this.roomId)
+          .update({
+            messageCount: documentNumber + 1
           })
       }
       this.scroll.current.scrollTop = this.scroll.current.scrollHeight
@@ -168,6 +190,7 @@ export default class Messages extends Component {
       <div className="chat">
         <div className="chat-messages" ref={this.scroll}>
           {this.state.messages.map(userAndMessage => {
+            console.log('userAndMessage is', userAndMessage)
             return (
               <div key={userAndMessage[0]}>
                 {userAndMessage[1]}
