@@ -23,6 +23,7 @@ export default class Canvas extends Component {
     this.getDrawing = this.getDrawing.bind(this)
     this.startTurnCountdown = this.startTurnCountdown.bind(this)
     this.ifNextPlayerNotHereRemove = this.ifNextPlayerNotHereRemove.bind(this)
+    this.drawerLeft = this.drawerLeft.bind(this)
   }
   async componentDidMount() {
     const drawingCollectionInfo = await db
@@ -77,6 +78,14 @@ export default class Canvas extends Component {
     }, milliseconds)
     // if (!this.roomInstanceInfo.data().turnOrder.length) this.startNewRound()
   }
+  async drawerLeft() {
+    this.turnOrderArray.shift()
+    await this.ifNextPlayerNotHereRemove()
+    await db.doc(`rooms/${this.roomId}`).update({
+      turnOrder: [...this.turnOrderArray]
+    })
+  }
+
   async ifNextPlayerNotHereRemove() {
     const roomInstanceUpdated = await db
       .collection(`rooms/${this.roomId}/players`)
@@ -87,7 +96,7 @@ export default class Canvas extends Component {
     })
     if (!playersHere.hasOwnProperty(this.turnOrderArray[0])) {
       this.turnOrderArray.shift()
-      this.ifNotHereRemove()
+      this.ifNextPlayerNotHereRemove()
     }
   }
   handleMouseDown() {

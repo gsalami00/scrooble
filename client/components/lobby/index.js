@@ -24,13 +24,6 @@ export default class Lobby extends Component {
       .catch(err => {
         console.log('Error geting documents: ', err)
       })
-    const roomInstance = await db
-      .doc(`rooms/${location.pathname.slice(1)}`)
-      .get()
-    const dbPlayerCount = roomInstance.data().playerCount
-    await db.doc(`rooms/${location.pathname.slice(1)}`).update({
-      playerCount: dbPlayerCount + 1
-    })
     this.setState({
       players: playerArr
     })

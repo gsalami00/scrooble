@@ -17,41 +17,38 @@ export default class Gameroom extends Component {
     this.roomInstanceInfo = ''
     this.roomInstance = ''
     this.leaveGame = this.leaveGame.bind(this)
-    this.decrementPlayerCount = this.decrementPlayerCount.bind(this)
-    // this.getUpdatedRoomInstance = this.getUpdatedRoomInstance.bind(this)
   }
-  async componentDidMount() {
+  componentDidMount() {
     try {
-      window.onbeforeunload = async event => {
-        event.preventDefault()
-        // this.roomInstance = await db
-        //   .doc(`rooms/${location.pathname.slice(1)}`)
-        //   .get()
-        await db
-          .doc(`rooms/${this.roomId}/players/${this.state.username}`)
-          .delete()
-        await this.decrementPlayerCount()
-        event.returnValue = `\o/`
-      }
+      window.onbeforeunload = this.leaveGame
 
-      const currentGame = await db.collection('rooms').doc(this.roomId)
-      this.roomInstanceInfo = await db
-        .collection('rooms')
-        .doc(this.roomId)
-        .get()
-      const currentGameData = this.roomInstanceInfo.data()
-      let currentTimer = currentGameData.timer
-      if (currentGameData.playerCount > 0) {
-        setInterval(() => {
-          if (currentTimer > -1) {
-            if (currentTimer === 0) {
-              currentGame.update({
-                timer: currentTimer--
-              })
-            }
-          }
-        }, 1000)
-      }
+      // const currentGame = await db.collection('rooms').doc(this.roomId)
+      // this.roomInstanceInfo = await db
+      //   .collection('rooms')
+      //   .doc(this.roomId)
+      //   .get()
+      // const currentGameData = this.roomInstanceInfo.data()
+      // let currentTimer = currentGameData.timer
+      // let playerCount = 0
+      // const playerCollectionInfo = await db
+      //   .collection(`rooms/${this.roomId}/players`)
+      //   .get()
+      // playerCollectionInfo.docs.forEach(doc => {
+      //   playerCount++
+      // })
+      // console.log(playerCount)
+
+      // if (playerCount > 1) {
+      //   setInterval(() => {
+      //     if (currentTimer > -1) {
+      //       if (currentTimer === 0) {
+      //         currentGame.update({
+      //           timer: currentTimer--
+      //         })
+      //       }
+      //     }
+      //   }, 1000)
+      // }
     } catch (err) {
       console.log(err)
     }
@@ -61,47 +58,11 @@ export default class Gameroom extends Component {
     // also in the componentDidUpdate: getting chat messages from firebase
     // Suggestion: when round is 1 more then a multiple of 3, it's a new round
   }
-  async decrementPlayerCount() {
-    const playersCollectionInfo = await db
-      .collection(`rooms/${this.roomId}/players`)
-      .get()
 
-    // const dbPlayerCount = this.roomInstance.data().playerCount
-    // const subtractedCount = dbPlayerCount - 1
-    // await db.doc(`rooms/${this.roomId}`).update({
-    //   playerCount: subtractedCount
-    // })
-  }
-  async leaveGame(event) {
+  leaveGame(event) {
     event.preventDefault()
-    // this.getUpdatedRoomInstance()
-    // const dbPlayerCount = this.getUpdatedRoomInstance.data().playerCount
-
-    // await db.doc(`rooms/${this.roomId}`).update({
-    //   playerCount: dbPlayerCount - 1
-    // })
-
-    await db.doc(`rooms/${this.roomId}/players/${this.state.username}`).delete()
-
-    // console.log('roominstanceinfo', this.roomInstanceInfo.data())
-    // const updatedRoomInstanceInfo = await db
-    //   .collection('rooms')
-    //   .doc(this.roomId)
-    //   .get()
-    // let turnOrderArray = updatedRoomInstanceInfo.data().turnOrder
-    // if (turnOrderArray.includes(this.state.username)) {
-    //   const idx = turnOrderArray.indexOf(this.state.username)
-    //   console.log(turnOrderArray, 'TURN ORDER ARRAY')
-    //   turnOrderArray.splice(idx, 1)
-    //   console.log(turnOrderArray, 'SPLICED')
-    //   await db.doc(`rooms/${this.roomId}`).update({
-    //     turnOrder: [...turnOrderArray]
-    //   })
-    // }
+    db.doc(`rooms/${this.roomId}/players/${this.state.username}`).delete()
     event.returnValue = `\o/`
-  }
-  componentWillUnmount() {
-    // window.removeEventListener('onbeforeunload', this.leaveGame)
   }
   render() {
     return (
