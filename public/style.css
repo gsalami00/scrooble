@@ -140,6 +140,21 @@ body {
   height: 15vw;
 }
 
+.winner-card {
+  background-color: rgba(0, 0, 0, .7);
+  display: inline-block;
+  position: absolute;
+  top: 17vw;
+  left: 8vw;
+  height: 15vw;
+  width: 83vw;
+  border-radius: 1vw;
+}
+
+.winner-text {
+
+}
+
 * {
   font-family: 'Lato', sans-serif;
 }

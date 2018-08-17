@@ -5,6 +5,7 @@ import Lobby from './lobby'
 import Canvas from './canvas'
 import {Link} from 'react-router-dom'
 import Timer from './canvas/Timer'
+import Winner from './Winner'
 
 export default class Gameroom extends Component {
   constructor() {
@@ -36,6 +37,11 @@ export default class Gameroom extends Component {
           }
         }, 1000)
       }
+      // console.log(currentRound)
+      // if (currentRound > 3){
+      //   console.log('round > 3')
+      // }
+      //get the winner
     } catch (err) {
       console.log(err)
     }
@@ -64,6 +70,7 @@ export default class Gameroom extends Component {
           />
         </div>
         <Link to="/">Home</Link>
+        <Winner />
       </div>
     )
   }
