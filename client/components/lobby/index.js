@@ -36,11 +36,9 @@ export default class Lobby extends Component {
   }
   render() {
     const allPlayers = this.state.players
-    console.log('this.state is', this.state)
     return (
       <React.Fragment>
         {allPlayers.map(player => {
-          console.log('player is', player)
           return (
             <div className="playercard" key={player[0]}>
               <PlayerCard name={player[1]} score={player[2]} />

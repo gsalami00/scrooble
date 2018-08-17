@@ -8,7 +8,7 @@ export default class Messages extends Component {
     this.scroll = React.createRef()
     this.state = {
       message: '',
-      messages: [[0, '']],
+      messages: [],
       guessedWord: false
     }
     this.handleChange = this.handleChange.bind(this)
@@ -17,7 +17,6 @@ export default class Messages extends Component {
   async componentDidMount() {
     try {
       let allMessages = []
-      let idx = this.state.messages.length
       const {messages} = this.state
       this.listener = await db
         .collection('rooms')
@@ -25,19 +24,12 @@ export default class Messages extends Component {
         .collection('chats')
         .onSnapshot(async querySnapshot => {
           querySnapshot.forEach(col => {
-            idx++
-            allMessages.push([
-              idx,
-              col.data().username + ': ' + col.data().message
-            ])
+            allMessages.push(col.data().username + ': ' + col.data().message)
           })
-          const nextKey = messages[messages.length - 1][0] + 1
           if (allMessages.length) {
-            const combine = [nextKey, allMessages]
             await this.setState({
-              messages: [...messages, combine]
+              messages: [...messages, allMessages]
             })
-            console.log('this.state.messages is', this.state.messages)
           }
           allMessages = []
         })
@@ -90,9 +82,8 @@ export default class Messages extends Component {
               guessedWord: true,
               score: score + timeLeft * 10
             })
-          const nextKey = messages[messages.length - 1][0] + 1
           this.setState({
-            messages: [...messages, [nextKey, `${username} guessed the word!`]],
+            messages: [...messages, [`${username} guessed the word!`]],
             message: '',
             guessedWord: true
           })
@@ -116,13 +107,12 @@ export default class Messages extends Component {
               messageCount: documentNumber + 1
             })
           this.setState({
-            messages: [...messages, [nextKey, `${username} guessed the word!`]],
+            messages: [...messages, `${username} guessed the word!`],
             message: ''
           })
           // end of turn, loop through each player and make guessed equal to false
         } else {
           const userAndMessage = `${username}: ${message}`
-          const nextKey = messages[messages.length - 1][0] + 1
           const documentNumberResponse = await db
             .collection('rooms')
             .doc(this.roomId)
@@ -144,18 +134,14 @@ export default class Messages extends Component {
               messageCount: documentNumber + 1
             })
           this.setState({
-            messages: [...messages, [nextKey, userAndMessage]],
+            messages: [...messages, userAndMessage],
             message: ''
           })
         }
       } else {
         // if they have already guessed and trying to type more during this 'turn'
-        const nextKey = messages[messages.length - 1][0] + 1
         this.setState({
-          messages: [
-            ...messages,
-            [nextKey, `You already guessed the word! 😄`]
-          ],
+          messages: [...messages, `You already guessed the word! 😄`],
           message: ''
         })
         const documentNumberResponse = await db
@@ -186,14 +172,25 @@ export default class Messages extends Component {
     }
   }
   render() {
+    function flatten (arr){
+      var output = [];
+      for (var i = 0; i < arr.length; i++){
+        if (Array.isArray(arr[i])){
+          output = output.concat(flatten(arr[i]));
+        } else {
+          output = output.concat(arr[i]);
+        }
+      }
+      return output;
+    }
+    let stateMessages = flatten(this.state.messages)
     return (
       <div className="chat">
         <div className="chat-messages" ref={this.scroll}>
-          {this.state.messages.map(userAndMessage => {
-            console.log('userAndMessage is', userAndMessage)
+          {stateMessages.map(userAndMessage => {
             return (
-              <div key={userAndMessage[0]}>
-                {userAndMessage[1]}
+              <div>
+                {userAndMessage}
                 {'\n'}
               </div>
             )
