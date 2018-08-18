@@ -4,6 +4,7 @@ import db from '../../../firestore.js'
 export default class UsernameDecider extends Component {
   constructor(props) {
     super(props)
+    this.roomId = localStorage.getItem('room')
     this.usernameCheck = this.usernameCheck.bind(this)
   }
   async componentDidMount() {
@@ -18,13 +19,15 @@ export default class UsernameDecider extends Component {
         guessedWord: false,
         username: finalUsername
       })
-
+      const initialRoomInfo = await db.doc(`rooms/${gameRoomId}`).get()
+      await db.doc(`rooms/${this.roomId}`).update({
+        waitingRoom: initialRoomInfo.data().waitingRoom + 1
+      })
       const roomInfo = await db.doc(`rooms/${gameRoomId}`).get()
-      const oldTurnOrder = roomInfo.data().turnOrder
-      console.log(oldTurnOrder.length)
-      if (oldTurnOrder.length > 1) {
-        await db.doc(`rooms/${gameRoomId}`).onSnapshot(room => {
-          if (room.turnOrder.length !== oldTurnOrder.length) {
+      let waitingRoom = roomInfo.data().waitingRoom
+      if (waitingRoom < 2) {
+        await db.doc(`rooms/${this.roomId}`).onSnapshot(room => {
+          if (room.data().waitingRoom > 1) {
             this.props.history.push(`/${gameRoomId}`)
           }
         })

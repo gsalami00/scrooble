@@ -1,7 +1,7 @@
 'use strict'
 
 import React, {Component} from 'react'
-import db from '../../../firestore.js'
+import db, {fdb} from '../../../firestore.js'
 
 export default class Canvas extends Component {
   constructor() {
@@ -49,20 +49,13 @@ export default class Canvas extends Component {
     const playersCollectionInfo = await db
       .collection(`rooms/${this.roomId}/players/`)
       .get()
-    if (playersCollectionInfo.docs.length > 1) {
-      const turnArray = []
-      playersCollectionInfo.forEach(player => turnArray.push(player.id))
-      await db.doc(`rooms/${this.roomId}`).update({
-        turnOrder: [...turnArray]
-      })
-      const updatedRoomInstanceInfo = await db.doc(`rooms/${this.roomId}`).get()
-      this.turnOrderArray = [...updatedRoomInstanceInfo.data().turnOrder]
-    } else {
-      setInterval(() => {
-        console.log('Checking for more players to start the round...')
-        this.startNewRound()
-      }, 5000)
-    }
+    const turnArray = []
+    playersCollectionInfo.forEach(player => turnArray.push(player.id))
+    await db.doc(`rooms/${this.roomId}`).update({
+      turnOrder: [...turnArray]
+    })
+    const updatedRoomInstanceInfo = await db.doc(`rooms/${this.roomId}`).get()
+    this.turnOrderArray = [...updatedRoomInstanceInfo.data().turnOrder]
   }
   drawCanvas(start, end, strokeColor = 'black') {
     const ctx = this.theCanvas.getContext('2d')
