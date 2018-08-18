@@ -11,28 +11,23 @@ export default class Lobby extends Component {
     }
   }
   async componentDidMount() {
-    try {
-      let playerArr = []
-      let idx = this.state.players.length
-      this.listener = await db
-        .collection('rooms')
-        .doc(this.roomId)
-        .collection('players')
-        .onSnapshot(async querySnapshot => {
-          querySnapshot.forEach(player => {
-            idx++
-            playerArr.push([idx, player.data().username, player.data().score])
-          })
-          if (playerArr.length) {
-            await this.setState({
-              players: playerArr
-            })
-          }
-          playerArr = []
+    let playerArr = []
+    const players = await db
+      .collection('rooms')
+      .doc(this.roomId)
+      .collection('players')
+      .get()
+      .then(querySnapshot => {
+        querySnapshot.forEach(player => {
+          playerArr.push(player.data().username)
         })
-    } catch (err) {
-      console.log(err)
-    }
+      })
+      .catch(err => {
+        console.log('Error geting documents: ', err)
+      })
+    this.setState({
+      players: playerArr
+    })
   }
   render() {
     const allPlayers = this.state.players

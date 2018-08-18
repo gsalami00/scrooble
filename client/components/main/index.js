@@ -9,7 +9,7 @@ export default class GameroomFinder extends Component {
         let notFullRooms = []
         await db
           .collection('rooms')
-          .where('isFull', '==', false)
+          .where('testField', '==', true)
           .get()
           .then(querySnapshot => {
             querySnapshot.forEach(room => {
@@ -24,10 +24,8 @@ export default class GameroomFinder extends Component {
       } else {
         const room = await db.collection('rooms').add({
           isFull: false,
-          playerCount: 1,
-          isPrivate: false,
           round: 1,
-          timer: 60,
+          // timer: 60,
           turnOrder: [],
           chosenWord: '',
           messageCount: 0
