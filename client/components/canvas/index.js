@@ -23,7 +23,6 @@ export default class Canvas extends Component {
     this.getDrawing = this.getDrawing.bind(this)
     this.startTurnCountdown = this.startTurnCountdown.bind(this)
     this.ifNextPlayerNotHereRemove = this.ifNextPlayerNotHereRemove.bind(this)
-    this.drawerLeft = this.drawerLeft.bind(this)
   }
   async componentDidMount() {
     const drawingCollectionInfo = await db
@@ -50,13 +49,20 @@ export default class Canvas extends Component {
     const playersCollectionInfo = await db
       .collection(`rooms/${this.roomId}/players/`)
       .get()
-    const turnArray = []
-    playersCollectionInfo.forEach(player => turnArray.push(player.id))
-    await db.doc(`rooms/${this.roomId}`).update({
-      turnOrder: [...turnArray]
-    })
-    const updatedRoomInstanceInfo = await db.doc(`rooms/${this.roomId}`).get()
-    this.turnOrderArray = [...updatedRoomInstanceInfo.data().turnOrder]
+    if (playersCollectionInfo.docs.length > 1) {
+      const turnArray = []
+      playersCollectionInfo.forEach(player => turnArray.push(player.id))
+      await db.doc(`rooms/${this.roomId}`).update({
+        turnOrder: [...turnArray]
+      })
+      const updatedRoomInstanceInfo = await db.doc(`rooms/${this.roomId}`).get()
+      this.turnOrderArray = [...updatedRoomInstanceInfo.data().turnOrder]
+    } else {
+      setInterval(() => {
+        console.log('Checking for more players to start the round...')
+        this.startNewRound()
+      }, 5000)
+    }
   }
   drawCanvas(start, end, strokeColor = 'black') {
     const ctx = this.theCanvas.getContext('2d')
@@ -77,13 +83,6 @@ export default class Canvas extends Component {
       })
     }, milliseconds)
     // if (!this.roomInstanceInfo.data().turnOrder.length) this.startNewRound()
-  }
-  async drawerLeft() {
-    this.turnOrderArray.shift()
-    await this.ifNextPlayerNotHereRemove()
-    await db.doc(`rooms/${this.roomId}`).update({
-      turnOrder: [...this.turnOrderArray]
-    })
   }
 
   async ifNextPlayerNotHereRemove() {

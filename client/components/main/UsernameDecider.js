@@ -12,14 +12,25 @@ export default class UsernameDecider extends Component {
       let username = localStorage.getItem('username')
       const finalUsername = await this.usernameCheck(username)
       localStorage.setItem('username', finalUsername)
-      // creates player:
       await db.doc(`rooms/${gameRoomId}/players/${finalUsername}`).set({
         score: 0,
         myTurn: false,
         guessedWord: false,
         username: finalUsername
       })
-      this.props.history.push(`/${gameRoomId}`)
+
+      const roomInfo = await db.doc(`rooms/${gameRoomId}`).get()
+      const oldTurnOrder = roomInfo.data().turnOrder
+      console.log(oldTurnOrder.length)
+      if (oldTurnOrder.length > 1) {
+        await db.doc(`rooms/${gameRoomId}`).onSnapshot(room => {
+          if (room.turnOrder.length !== oldTurnOrder.length) {
+            this.props.history.push(`/${gameRoomId}`)
+          }
+        })
+      } else {
+        this.props.history.push(`/${gameRoomId}`)
+      }
     } catch (err) {
       console.log(err)
     }
@@ -41,6 +52,6 @@ export default class UsernameDecider extends Component {
     }
   }
   render() {
-    return <div>Confirming unique username...</div>
+    return <div>Next turn starting soon...</div>
   }
 }
