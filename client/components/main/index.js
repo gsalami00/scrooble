@@ -27,7 +27,8 @@ export default class GameroomFinder extends Component {
           round: 1,
           // timer: 60,
           turnOrder: [],
-          chosenWord: ''
+          chosenWord: '',
+          messageCount: 0
         })
         localStorage.setItem('room', room.id)
         this.props.history.push('/username-decider')

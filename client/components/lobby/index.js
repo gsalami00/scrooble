@@ -3,8 +3,9 @@ import React, {Component} from 'react'
 import db from '../../../firestore'
 
 export default class Lobby extends Component {
-  constructor(props) {
-    super(props)
+  constructor() {
+    super()
+    this.roomId = location.pathname.slice(1)
     this.state = {
       players: []
     }
@@ -13,7 +14,7 @@ export default class Lobby extends Component {
     let playerArr = []
     const players = await db
       .collection('rooms')
-      .doc(this.props.roomId)
+      .doc(this.roomId)
       .collection('players')
       .get()
       .then(querySnapshot => {
@@ -28,16 +29,14 @@ export default class Lobby extends Component {
       players: playerArr
     })
   }
-
   render() {
     const allPlayers = this.state.players
     return (
       <React.Fragment>
-        {/* <div>Map over playercards</div> */}
-        {allPlayers.map((player, idx) => {
+        {allPlayers.map(player => {
           return (
-            <div className="playercard" key={idx}>
-              <PlayerCard name={player} />
+            <div className="playercard" key={player[0]}>
+              <PlayerCard name={player[1]} score={player[2]} />
             </div>
           )
         })}

@@ -5,6 +5,7 @@ import Lobby from './lobby'
 import Canvas from './canvas'
 import {Link} from 'react-router-dom'
 import Timer from './canvas/Timer'
+import Winner from './Winner'
 
 export default class Gameroom extends Component {
   constructor() {
@@ -21,34 +22,6 @@ export default class Gameroom extends Component {
   componentDidMount() {
     try {
       window.onbeforeunload = this.leaveGame
-
-      // const currentGame = await db.collection('rooms').doc(this.roomId)
-      // this.roomInstanceInfo = await db
-      //   .collection('rooms')
-      //   .doc(this.roomId)
-      //   .get()
-      // const currentGameData = this.roomInstanceInfo.data()
-      // let currentTimer = currentGameData.timer
-      // let playerCount = 0
-      // const playerCollectionInfo = await db
-      //   .collection(`rooms/${this.roomId}/players`)
-      //   .get()
-      // playerCollectionInfo.docs.forEach(doc => {
-      //   playerCount++
-      // })
-      // console.log(playerCount)
-
-      // if (playerCount > 1) {
-      //   setInterval(() => {
-      //     if (currentTimer > -1) {
-      //       if (currentTimer === 0) {
-      //         currentGame.update({
-      //           timer: currentTimer--
-      //         })
-      //       }
-      //     }
-      //   }, 1000)
-      // }
     } catch (err) {
       console.log(err)
     }
@@ -71,7 +44,7 @@ export default class Gameroom extends Component {
           <Timer />
         </div>
         <div className="lobbybox">
-          <Lobby roomId={this.props.match.params.gameroom} />
+          <Lobby />
         </div>
         <div className="canvas">
           <Canvas canvasData={this.state.canvasData} />
@@ -83,6 +56,7 @@ export default class Gameroom extends Component {
           />
         </div>
         <Link to="/">Home</Link>
+        <Winner />
       </div>
     )
   }
