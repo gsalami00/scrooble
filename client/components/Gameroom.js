@@ -13,7 +13,7 @@ export default class Gameroom extends Component {
       username: localStorage.getItem('username'),
       canvasData: []
     }
-    this.roomId = '6CKavy7w3KGZf5hYdZa6' //location.pathname.slice(1)
+    this.roomId = location.pathname.slice(1)
     this.roomInstanceInfo = ''
     this.roomInstance = ''
     this.leaveGame = this.leaveGame.bind(this)
