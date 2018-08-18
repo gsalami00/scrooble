@@ -56,7 +56,7 @@ export default class Gameroom extends Component {
           />
         </div>
         <Link to="/">Home</Link>
-        <Winner />
+        {/* <Winner /> */}
       </div>
     )
   }

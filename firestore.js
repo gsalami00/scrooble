@@ -1,5 +1,6 @@
 const firebase = require('firebase')
 require('firebase/firestore')
+require('firebase/database')
 require('firebase/auth')
 
 firebase.initializeApp({
@@ -13,5 +14,7 @@ firebase.initializeApp({
 const db = firebase.firestore()
 const settings = {timestampsInSnapshots: true}
 db.settings(settings)
+
+export const fdb = firebase.database()
 
 export default db
