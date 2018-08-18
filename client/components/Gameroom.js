@@ -15,9 +15,14 @@ export default class Gameroom extends Component {
       canvasData: [],
       currentRound: 0
     }
+    this.roomId = location.pathname.slice(1)
+    this.roomInstanceInfo = ''
+    this.roomInstance = ''
+    this.leaveGame = this.leaveGame.bind(this)
   }
-  async componentDidMount() {
+  componentDidMount() {
     try {
+
       const gameRoomId = localStorage.getItem('room')
       const currentGame = await db.collection('rooms').doc(gameRoomId)
       const currentGameGet = await db
@@ -30,17 +35,18 @@ export default class Gameroom extends Component {
       this.setState({
         currentRound
       })
-      if (currentGameData.playerCount > 0) {
-        setInterval(() => {
-          if (currentTimer > -1) {
-            if (currentTimer === 0) {
-              currentGame.update({
-                timer: currentTimer--
-              })
-            }
-          }
-        }, 1000)
-      }
+      // if (currentGameData.playerCount > 0) {
+      //   setInterval(() => {
+      //     if (currentTimer > -1) {
+      //       if (currentTimer === 0) {
+      //         currentGame.update({
+      //           timer: currentTimer--
+      //         })
+      //       }
+      //     }
+      //   }, 1000)
+      // }
+      window.onbeforeunload = this.leaveGame
     } catch (err) {
       console.log(err)
     }
@@ -49,6 +55,12 @@ export default class Gameroom extends Component {
     // how to handle the next turns: componentDidUpdate?
     // also in the componentDidUpdate: getting chat messages from firebase
     // Suggestion: when round is 1 more then a multiple of 3, it's a new round
+  }
+
+  leaveGame(event) {
+    event.preventDefault()
+    db.doc(`rooms/${this.roomId}/players/${this.state.username}`).delete()
+    event.returnValue = `\o/`
   }
   render() {
     const {currentRound} = this.state

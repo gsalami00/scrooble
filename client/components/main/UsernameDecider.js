@@ -4,6 +4,7 @@ import db from '../../../firestore.js'
 export default class UsernameDecider extends Component {
   constructor(props) {
     super(props)
+    this.roomId = localStorage.getItem('room')
     this.usernameCheck = this.usernameCheck.bind(this)
   }
   async componentDidMount() {
@@ -12,14 +13,27 @@ export default class UsernameDecider extends Component {
       let username = localStorage.getItem('username')
       const finalUsername = await this.usernameCheck(username)
       localStorage.setItem('username', finalUsername)
-      // creates player:
       await db.doc(`rooms/${gameRoomId}/players/${finalUsername}`).set({
         score: 0,
         myTurn: false,
         guessedWord: false,
         username: finalUsername
       })
-      this.props.history.push(`/${gameRoomId}`)
+      const initialRoomInfo = await db.doc(`rooms/${gameRoomId}`).get()
+      await db.doc(`rooms/${this.roomId}`).update({
+        waitingRoom: initialRoomInfo.data().waitingRoom + 1
+      })
+      const roomInfo = await db.doc(`rooms/${gameRoomId}`).get()
+      let waitingRoom = roomInfo.data().waitingRoom
+      if (waitingRoom < 2) {
+        await db.doc(`rooms/${this.roomId}`).onSnapshot(room => {
+          if (room.data().waitingRoom > 1) {
+            this.props.history.push(`/${gameRoomId}`)
+          }
+        })
+      } else {
+        this.props.history.push(`/${gameRoomId}`)
+      }
     } catch (err) {
       console.log(err)
     }
@@ -41,6 +55,6 @@ export default class UsernameDecider extends Component {
     }
   }
   render() {
-    return <div>Confirming unique username...</div>
+    return <div>Next turn starting soon...</div>
   }
 }

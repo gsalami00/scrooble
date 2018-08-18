@@ -1,5 +1,5 @@
 form {
-  margin:1vw 0vw;
+  margin: 1vw 0vw;
 }
 
 body {
@@ -9,9 +9,15 @@ body {
 }
 
 @keyframes AnimationName {
-    0%{background-position:0% 50%}
-    50%{background-position:100% 50%}
-    100%{background-position:0% 50%}
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 .chatbox {
@@ -57,8 +63,103 @@ body {
   height: 44vw;
   float: left;
   margin: 1vw 1vw;
-  background-color:white;
+  background-color: white;
   box-shadow: 0 0 1rem #000000;
+}
+
+#color-pallete {
+  width: 49vw;
+  height: 40px;
+  margin: 9vw 0.5vw;
+  display: block;
+}
+
+.color-palette-square {
+  width: 6%;
+  margin: 0.25%;
+  height: 40px;
+  display: inline-block;
+  float: left;
+  padding: 0px;
+}
+
+.black {
+  background-color: #000000;
+}
+
+.gray {
+  background-color: #555555;
+}
+
+.brown {
+  background-color: #6b2d01;
+}
+
+.red {
+  background-color: #ff0000;
+}
+
+.orange {
+  background-color: #ff6600;
+}
+
+.yellow {
+  background-color: #ffd200;
+}
+
+.green {
+  background-color: #05be16;
+}
+
+.blue {
+  background-color: #0073e9;
+}
+
+.violet {
+  background-color: #7d0087;
+}
+
+.pink {
+  background-color: #ff007d;
+}
+
+.white {
+  background-color: #fff;
+}
+
+img.eraser {
+  height: 30px;
+  width: auto;
+}
+
+.clear-btn {
+  display: block;
+  width: 97%;
+  font-size: 20px;
+  margin: 0.25%;
+  height: 40px;
+  float: none;
+  padding: 0px;
+}
+.brush-small {
+  background-color: #fff;
+  color: 'black';
+  font-size: 12px;
+  padding-top: 2px;
+}
+
+.brush-medium {
+  background-color: #fff;
+  font-size: 18px;
+}
+
+.brush-large {
+  background-color: #fff;
+  font-size: 33px;
+}
+
+.brush-large-text {
+  margin-top: -2px;
 }
 
 .timer {
@@ -124,7 +225,12 @@ body {
   color: black;
   box-shadow: 0 0 1px #000000;
   border-radius: 10px;
-  background-image: linear-gradient( to right, #40b9ff 0%, #87ffbd 51%, #ffffff 100% );
+  background-image: linear-gradient(
+    to right,
+    #40b9ff 0%,
+    #87ffbd 51%,
+    #ffffff 100%
+  );
   height: 4vw;
   width: 13vw;
   font-size: 1.1em;

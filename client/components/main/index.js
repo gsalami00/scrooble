@@ -19,20 +19,19 @@ export default class GameroomFinder extends Component {
           .catch(err => {
             console.log('Error getting documents: ', err)
           })
-        localStorage.setItem('room', notFullRooms[0])
+        await localStorage.setItem('room', notFullRooms[0])
         this.props.history.push('/username-decider')
       } else {
         const room = await db.collection('rooms').add({
           isFull: false,
-          playerCount: 1,
-          isPrivate: false,
           round: 1,
-          timer: 60,
+          // timer: 60,
+          waitingRoom: 0,
           turnOrder: [],
           chosenWord: '',
           messageCount: 0
         })
-        localStorage.setItem('room', room.id)
+        await localStorage.setItem('room', room.id)
         this.props.history.push('/username-decider')
       }
     } catch (err) {
