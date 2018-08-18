@@ -20,14 +20,12 @@ export default class Gameroom extends Component {
     this.roomInstance = ''
     this.leaveGame = this.leaveGame.bind(this)
   }
-  componentDidMount() {
+  async componentDidMount() {
     try {
-
-      const gameRoomId = localStorage.getItem('room')
-      const currentGame = await db.collection('rooms').doc(gameRoomId)
+      const currentGame = await db.collection('rooms').doc(this.roomId)
       const currentGameGet = await db
         .collection('rooms')
-        .doc(gameRoomId)
+        .doc(this.roomId)
         .get()
       const currentGameData = currentGameGet.data()
       let currentTimer = currentGameData.timer
@@ -35,17 +33,17 @@ export default class Gameroom extends Component {
       this.setState({
         currentRound
       })
-      // if (currentGameData.playerCount > 0) {
-      //   setInterval(() => {
-      //     if (currentTimer > -1) {
-      //       if (currentTimer === 0) {
-      //         currentGame.update({
-      //           timer: currentTimer--
-      //         })
-      //       }
-      //     }
-      //   }, 1000)
-      // }
+      if (currentGameData.playerCount > 0) {
+        setInterval(() => {
+          if (currentTimer > -1) {
+            if (currentTimer === 0) {
+              currentGame.update({
+                timer: currentTimer--
+              })
+            }
+          }
+        }, 1000)
+      }
       window.onbeforeunload = this.leaveGame
     } catch (err) {
       console.log(err)
