@@ -19,18 +19,23 @@ export default class Messages extends Component {
     try {
       let allMessages = []
       const {messages} = this.state
-      this.listener = await db
+      await db
         .collection('rooms')
         .doc(this.roomId)
         .collection('chats')
-        .onSnapshot(querySnapshot => {
-          querySnapshot.forEach(col => {
-            allMessages.push(col.data().username + ': ' + col.data().message)
-          })
+        .onSnapshot(async querySnapshot => {
+          console.log(querySnapshot.docs[querySnapshot.docs.length - 1].data())
+          // querySnapshot.forEach(col => {
+          allMessages.push(
+            querySnapshot.docs[querySnapshot.docs.length - 1].data().username +
+              ': ' +
+              querySnapshot.docs[querySnapshot.docs.length - 1].data().message
+          )
+          // })
           //if (allMessages.length) {
-            this.setState({
-              messages: [...messages, allMessages]
-            })
+          await this.setState({
+            messages: [...messages, allMessages]
+          })
           //}
           allMessages = []
         })
@@ -38,15 +43,15 @@ export default class Messages extends Component {
       console.log(err)
     }
   }
-  async componentWillUnmount() {
-    await this.listener.unsubscribe()
-    await db
-      .collection('rooms')
-      .doc(localStorage.getItem('room'))
-      .collection('players')
-      .doc(localStorage.getItem('username'))
-      .delete()
-  }
+  // async componentWillUnmount() {
+  //   // await this.listener.unsubscribe()
+  //   await db
+  //     .collection('rooms')
+  //     .doc(localStorage.getItem('room'))
+  //     .collection('players')
+  //     .doc(localStorage.getItem('username'))
+  //     .delete()
+  // }
   handleChange(event) {
     this.setState({
       [event.target.name]: event.target.value
@@ -63,7 +68,7 @@ export default class Messages extends Component {
         .doc(roomId)
         .get()
       if (!this.state.guessedWord) {
-        const chosenWord = await room.data().chosenWord
+        const chosenWord = room.data().chosenWord
         if (message && chosenWord === message.toLowerCase()) {
           // IF CORRECT WORD (making sure not empty string, then making sure same as chosenWord)
           const responsePlayer = await db
@@ -72,8 +77,8 @@ export default class Messages extends Component {
             .collection('players')
             .doc(username)
             .get()
-          const score = await responsePlayer.data().score
-          const timeLeft = await room.data().timer
+          const score = responsePlayer.data().score
+          const timeLeft = room.data().timer
           await db
             .collection('rooms')
             .doc(roomId)
@@ -159,24 +164,23 @@ export default class Messages extends Component {
     }
   }
   render() {
-    function flatten(arr) {
-      var output = []
-      for (var i = 0; i < arr.length; i++) {
-        if (Array.isArray(arr[i])) {
-          output = output.concat(flatten(arr[i]))
-        } else {
-          output = output.concat(arr[i])
-        }
-      }
-      return output
-    }
-    let stateMessages = flatten(this.state.messages)
+    // function flatten(arr) {
+    //   var output = []
+    //   for (var i = 0; i < arr.length; i++) {
+    //     if (Array.isArray(arr[i])) {
+    //       output = output.concat(flatten(arr[i]))
+    //     } else {
+    //       output = output.concat(arr[i])
+    //     }
+    //   }
+    //   return output
+    // }
+    let stateMessages = this.state.messages
     console.log('stateMessages is', stateMessages)
     return (
       <div className="chat">
         <div className="chat-messages" ref={this.scroll}>
           {stateMessages.map((userAndMessage, idx) => {
-            console.log('idx is', idx)
             return (
               <div key={idx}>
                 {userAndMessage}
@@ -194,7 +198,7 @@ export default class Messages extends Component {
             placeholder="Make guesses here!"
             className="input"
           />
-          <button type="Submit">GO</button>
+          <button type="submit">GO</button>
         </form>
       </div>
     )
