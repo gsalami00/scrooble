@@ -12,7 +12,8 @@ export default class Gameroom extends Component {
     super()
     this.state = {
       username: localStorage.getItem('username'),
-      canvasData: []
+      canvasData: [],
+      currentRound: 0
     }
     this.roomId = location.pathname.slice(1)
     this.roomInstanceInfo = ''
@@ -38,6 +39,7 @@ export default class Gameroom extends Component {
     event.returnValue = `\o/`
   }
   render() {
+    const {currentRound} = this.state
     return (
       <div>
         <div className="timer">
@@ -49,14 +51,14 @@ export default class Gameroom extends Component {
         <div className="canvas">
           <Canvas canvasData={this.state.canvasData} />
         </div>
-        <div className="chatbox">
+        {/* <div className="chatbox">
           <Chat
             roomId={this.props.match.params.gameroom}
             username={this.state.username}
           />
-        </div>
+        </div> */}
         <Link to="/">Home</Link>
-        {/* <Winner /> */}
+        {currentRound > 3 ? <Winner /> : ''}
       </div>
     )
   }
