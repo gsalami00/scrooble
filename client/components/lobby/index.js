@@ -2,12 +2,20 @@ import PlayerCard from './PlayerCard'
 import React, {Component} from 'react'
 import db from '../../../firestore'
 
+// winner screen
+// shift for the next drawer so next person gets choosewordprompt
+// hangman
+
 export default class Lobby extends Component {
-  constructor() {
-    super()
+  constructor(props) {
+    super(props)
     this.state = {
       players: [],
-      message: ''
+      message: '',
+      currentChosenWord: '',
+      disabled: '',
+      guessedWord: false,
+      score: 0
     }
     // this.chatId = ''
     this.roomId = location.pathname.slice(1)
@@ -41,6 +49,16 @@ export default class Lobby extends Component {
           playerArr = []
         })
 
+      await db
+        .collection('rooms')
+        .doc(this.roomId)
+        .onSnapshot(doc => {
+          this.setState({
+            currentChosenWord: doc.data().chosenWord,
+            guessedWord: false
+          })
+        })
+
       // const chatInstanceInfo = await db
       //   .collection('rooms')
       //   .doc(this.roomId)
@@ -58,10 +76,38 @@ export default class Lobby extends Component {
   }
   async handleSubmit(event) {
     event.preventDefault()
+    const {myTurn} = this.props
     try {
-      await db.doc(`rooms/${this.roomId}/players/${this.username}`).update({
-        message: this.state.message
-      })
+      if (!myTurn) {
+        if (
+          this.state.message === this.state.currentChosenWord &&
+          !this.state.guessedWord
+        ) {
+          this.setState({
+            guessedWord: true
+          })
+          await db.doc(`rooms/${this.roomId}/players/${this.username}`).update({
+            message: 'GUESSED THE WORD!',
+            score: this.state.score + this.props.time * 10
+          })
+          this.setState({
+            score: this.state.score + this.props.time * 10
+          })
+        } else if (this.state.guessedWord) {
+          this.setState({
+            message: 'GUESSED THE WORD!'
+          })
+        } else {
+          // actual guess
+          await db.doc(`rooms/${this.roomId}/players/${this.username}`).update({
+            message: this.state.message
+          })
+        }
+      } else {
+        await db.doc(`rooms/${this.roomId}/players/${this.username}`).update({
+          message: 'NAUGHTY-NAUGHTY! (I tried guessing...)'
+        })
+      }
       this.setState({
         message: ''
       })
@@ -91,7 +137,9 @@ export default class Lobby extends Component {
             name="message"
             value={this.state.message}
             onChange={this.handleChange}
-            placeholder="Make guesses here!"
+            placeholder={
+              this.props.myTurn ? 'THOU SHALT NOT GUESS!' : 'Make guesses here!'
+            }
             className="input"
           />
           <button type="submit">GO</button>

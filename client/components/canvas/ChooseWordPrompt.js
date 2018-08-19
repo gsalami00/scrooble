@@ -2,19 +2,17 @@ import React, {Component, Fragment} from 'react'
 import db from '../../../firestore.js'
 
 export default class ChooseWordPrompt extends Component {
-  constructor() {
-    super()
+  constructor(props) {
+    super(props)
     this.state = {
       threeWords: [],
-      time: 12,
       roomId: localStorage.getItem('room')
     }
     this.handleSubmit = this.handleSubmit.bind(this)
-    this.countdown = this.countdown.bind(this)
   }
   async componentDidMount() {
     try {
-      this.countdown()
+      //this.countdown()
       const response = await db
         .collection('words')
         .doc('words')
@@ -52,38 +50,32 @@ export default class ChooseWordPrompt extends Component {
       event.preventDefault()
       await db
         .collection('rooms')
-        .doc(this.state.roomId) // temporarily will have hard-coded room since component is currently outside of game while in development
+        .doc(this.state.roomId)
         .update({
           chosenWord: word
         })
-      const response = await db // this double-checks by grabbing the chosenWord from db instead of just what was clicked
-        .collection('rooms')
-        .doc(this.state.roomId)
-        .get()
-      const chosenWord = response.data().chosenWord
-      alert(`The word has been updated to ${chosenWord}`)
-      // then, tell (set) database that this word is chosenWord
+      this.props.handleChosenWord()
     } catch (err) {
       console.log(err)
     }
   }
-  countdown() {
-    let currTime = this.state.time
-    const timer = setInterval(() => {
-      // const timer necessary in order to stop it later with clearInterval
-      if (currTime > -1) {
-        this.setState({
-          time: currTime--
-        })
-      } else {
-        localStorage.setItem('username', null)
-        localStorage.setItem('room', null)
-        // delete player from room -- grab current players, then update without player from localStorage.getItem('user')
-        this.props.history.push('/')
-        clearInterval(timer)
-      }
-    }, 1000)
-  }
+  // countdown() {
+  //   let currTime = this.state.time
+  //   const timer = setInterval(() => {
+  //     // const timer necessary in order to stop it later with clearInterval
+  //     if (currTime > -1) {
+  //       this.setState({
+  //         time: currTime--
+  //       })
+  //     } else {
+  //       localStorage.setItem('username', null)
+  //       localStorage.setItem('room', null)
+  //       // delete player from room -- grab current players, then update without player from localStorage.getItem('user')
+  //       this.props.history.push('/')
+  //       clearInterval(timer)
+  //     }
+  //   }, 1000)
+  // }
   render() {
     return (
       <Fragment>
