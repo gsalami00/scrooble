@@ -9,7 +9,7 @@ export default class Lobby extends Component {
       players: [],
       message: ''
     }
-    this.chatId = ''
+    // this.chatId = ''
     this.roomId = location.pathname.slice(1)
     this.username = localStorage.getItem('username')
     this.handleChange = this.handleChange.bind(this)
@@ -41,12 +41,12 @@ export default class Lobby extends Component {
           playerArr = []
         })
 
-      const chatInstanceInfo = await db
-        .collection('rooms')
-        .doc(this.roomId)
-        .collection('chats')
-        .get()
-      this.chatId = chatInstanceInfo.docs[0].id
+      // const chatInstanceInfo = await db
+      //   .collection('rooms')
+      //   .doc(this.roomId)
+      //   .collection('chats')
+      //   .get()
+      // this.chatId = chatInstanceInfo.docs[0].id
     } catch (err) {
       console.log(err)
     }
