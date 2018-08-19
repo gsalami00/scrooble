@@ -73,12 +73,12 @@ export default class Gameroom extends Component {
         <div className="canvas">
           <Canvas canvasData={this.state.canvasData} />
         </div>
-        <div className="chatbox">
+        {/* <div className="chatbox">
           <Chat
             roomId={this.props.match.params.gameroom}
             username={this.state.username}
           />
-        </div>
+        </div> */}
         <Link to="/">Home</Link>
         {currentRound > 3 ? <Winner /> : ''}
       </div>
