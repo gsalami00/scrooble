@@ -88,12 +88,15 @@ export default class Gameroom extends Component {
     const {currentRound, time, canvasData} = this.state
     console.log('this.state.chosenWord is', this.state.chosenWord)
     return (
-      <div>
-        <div>
+      <div className="gameroom-body">
+        <div className="navbar">
+          <div className="gameroom-logo">
+            <img src="logo-small.png" />
+          </div>
           <Hangman chosenWord={this.state.chosenWord} time={time} />
-        </div>
-        <div className="timer">
-          <div className="timer-text">{time}</div>
+          <div className="timer">
+            <div className="timer-text">{time}</div>
+          </div>
         </div>
         <div className="lobbybox">
           <Lobby time={time} myTurn={this.state.myTurn} />
