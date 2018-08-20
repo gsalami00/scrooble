@@ -34,14 +34,11 @@ export default class Canvas extends Component {
       .collection(`rooms/${this.roomId}/drawings`)
       .get()
     if (drawingCollectionInfo.empty) {
-      await db.collection(`rooms/${this.roomId}/drawings`).add({
+      await db.doc(`rooms/${this.roomId}/drawings/canvas`).set({
         canvasData: []
       })
     }
-    const updatedDrawingCollectionInfo = await db
-      .collection(`rooms/${this.roomId}/drawings`)
-      .get()
-    this.drawingDocId = updatedDrawingCollectionInfo.docs[0].id
+    this.drawingDocId = 'canvas'
     this.roomInstanceInfo = await db.doc(`rooms/${this.roomId}`).get()
     if (
       this.roomInstanceInfo.data().turnOrder === undefined ||
@@ -126,7 +123,7 @@ export default class Canvas extends Component {
         })
         this.startTurnCountdown()
       }
-    }, 75000)
+    }, 76000)
   }
 
   async ifNextPlayerNotHereRemove() {
@@ -145,7 +142,6 @@ export default class Canvas extends Component {
     if (!playersHere[this.turnOrderArray[0]]) {
       console.log('infinitely looping')
       this.turnOrderArray.shift()
-      this.ifNextPlayerNotHereRemove()
     }
   }
   handleMouseDown() {
