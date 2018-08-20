@@ -25,7 +25,6 @@ export default class GameroomFinder extends Component {
         const room = await db.collection('rooms').add({
           isFull: false,
           round: 0,
-          // timer: 60,
           waitingRoom: 0,
           turnOrder: [],
           chosenWord: ''
