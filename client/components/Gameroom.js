@@ -6,6 +6,8 @@ import Canvas from './canvas'
 import {Link} from 'react-router-dom'
 import Timer from './canvas/Timer'
 import Winner from './Winner'
+import ChooseWordPrompt from './canvas/ChooseWordPrompt.js'
+import Hangman from './Hangman'
 
 export default class Gameroom extends Component {
   constructor() {
@@ -13,19 +15,48 @@ export default class Gameroom extends Component {
     this.state = {
       username: localStorage.getItem('username'),
       canvasData: [],
-      currentRound: 0
+      currentRound: 0,
+      time: 75,
+      hasPickedWord: false,
+      myTurn: '',
+      chosenWord: ''
     }
+    this.handleChosenWord = this.handleChosenWord.bind(this)
     this.roomId = location.pathname.slice(1)
     this.roomInstanceInfo = ''
     this.roomInstance = ''
     this.leaveGame = this.leaveGame.bind(this)
+    this.countdown = this.countdown.bind(this)
   }
-  componentDidMount() {
-    try {
-      window.onbeforeunload = this.leaveGame
-    } catch (err) {
-      console.log(err)
-    }
+  async componentDidMount() {
+    this.countdown()
+    await db
+      .collection('rooms')
+      .doc(this.roomId)
+      .onSnapshot(doc => {
+        console.log('turnOrder', doc.data().turnOrder)
+        if (doc.data().turnOrder[0] === this.state.username) {
+          this.setState({
+            myTurn: true
+          })
+        } else {
+          this.setState({
+            myTurn: false
+          })
+        }
+        this.setState({
+          chosenWord: doc.data().chosenWord
+        })
+      })
+    // setTimeout(async () => {
+    //   const room = await db
+    //     .collection('rooms')
+    //     .doc(this.roomId)
+    //     .get()
+    //   //const player = room.data().turnOrder[0] || ''
+    //   this.myTurn = room.data().turnOrder[0] === this.state.username
+    // }, 3000)
+    window.onbeforeunload = this.leaveGame
     // The choose word prompt should appear if it's the player's turn (if the player in localstorage matches the first player in the array)
     // at the end of the turn, pop the player from the array
     // how to handle the next turns: componentDidUpdate?
@@ -38,18 +69,37 @@ export default class Gameroom extends Component {
     db.doc(`rooms/${this.roomId}/players/${this.state.username}`).delete()
     event.returnValue = `\o/`
   }
+  countdown() {
+    setInterval(() => {
+      if (this.state.time > 0) {
+        this.setState({
+          time: --this.state.time
+        })
+      }
+      if (this.state.time === 0) {
+        this.setState({hasPickedWord: false})
+      }
+    }, 1000)
+  }
+  handleChosenWord() {
+    this.setState({hasPickedWord: true})
+  }
   render() {
-    const {currentRound} = this.state
+    const {currentRound, time, canvasData} = this.state
+    console.log('this.state.chosenWord is', this.state.chosenWord)
     return (
       <div>
+        <div>
+          <Hangman chosenWord={this.state.chosenWord} time={time} />
+        </div>
         <div className="timer">
-          <Timer />
+          <div className="timer-text">{time}</div>
         </div>
         <div className="lobbybox">
-          <Lobby />
+          <Lobby time={time} myTurn={this.state.myTurn} />
         </div>
         <div className="canvas">
-          <Canvas canvasData={this.state.canvasData} />
+          <Canvas canvasData={canvasData} />
         </div>
         {/* <div className="chatbox">
           <Chat
@@ -59,6 +109,14 @@ export default class Gameroom extends Component {
         </div> */}
         <Link to="/">Home</Link>
         {currentRound > 3 ? <Winner /> : ''}
+        {this.state.myTurn && !this.state.hasPickedWord ? (
+          <ChooseWordPrompt
+            handleChosenWord={this.handleChosenWord}
+            history={this.props.history}
+          />
+        ) : (
+          ''
+        )}
       </div>
     )
   }
