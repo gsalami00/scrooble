@@ -51,26 +51,39 @@ export default class Canvas extends Component {
     }
   }
   async startNewRound() {
+    // getting collection of players and pushing them into an array
     const playersCollectionInfo = await db
       .collection(`rooms/${this.roomId}/players/`)
       .get()
     const turnArray = []
     playersCollectionInfo.forEach(player => turnArray.push(player.id))
+    // updating turnOrder array in firebase
     await db.doc(`rooms/${this.roomId}`).update({
       turnOrder: [...turnArray]
     })
     const updatedRoomInstanceInfo = await db.doc(`rooms/${this.roomId}`).get()
+    // getting turnOrder array from firebase and updating this.turnOrderArray
     this.turnOrderArray = [...updatedRoomInstanceInfo.data().turnOrder]
-    this.drawer = this.turnOrderArray[0]
+    // assigning drawer to user at 0th index of turnOrderArray
+    // this.drawer = this.turnOrderArray[0]
+    // console.log('startnewround', this.drawer, this.username)
     const updatedRoomInfo = await db.doc(`rooms/${this.roomId}`).get()
+    // incrementing round before updating anything
     const currentRoundUpdated = updatedRoomInfo.data().round + 1
-    if (currentRoundUpdated > 4) {
+    if (currentRoundUpdated > 3) {
+      //push people into home page if rounds have ended
       setTimeout(() => this.props.history.push('/'), 5000)
-    } else if (currentRoundUpdated < 4 && this.drawer === this.username) {
+    } else if (
+      currentRoundUpdated < 4 &&
+      this.turnOrderArray[0] == this.username
+    ) {
+      console.log(currentRoundUpdated, 'current round updated')
+      // updating round on firebase if it's less than 4 and current drawer is the user
       await db.doc(`rooms/${this.roomId}`).update({
         round: currentRoundUpdated
       })
     }
+    this.startTurnCountdown()
   }
   drawCanvas(start, end, strokeColor = 'black', lineWidth) {
     const ctx = this.theCanvas.getContext('2d')
@@ -91,31 +104,46 @@ export default class Canvas extends Component {
     })
   }
   startTurnCountdown() {
+    // after 10 or 75 seconds, execute the following
     setTimeout(async () => {
-      if (this.drawer === this.username && this.turnOrderArray.length === 1) {
-        return this.startNewRound()
+      if (this.turnOrderArray.length <= 1) {
+        // instead of shifting off last person, we start new round
+        this.startNewRound()
+      } else {
+        console.log('before shift', this.turnOrderArray)
+        this.turnOrderArray.shift()
+        console.log('after shift', this.turnOrderArray)
+        await this.ifNextPlayerNotHereRemove()
+        // this.drawer = this.turnOrderArray[0]
+        console.log(
+          'array at 0 + username',
+          this.turnOrderArray[0],
+          this.username
+        )
+        console.log('start turn countdown', this.turnOrderArray)
+        await db.doc(`rooms/${this.roomId}`).update({
+          turnOrder: [...this.turnOrderArray]
+        })
+        this.startTurnCountdown()
       }
-      this.turnOrderArray.shift()
-      this.drawer = this.turnOrderArray[0]
-      await this.ifNextPlayerNotHereRemove()
-      await db.doc(`rooms/${this.roomId}`).update({
-        turnOrder: [...this.turnOrderArray]
-      })
-      // await this.clearCanvas()
     }, 75000)
-
-    // if (!this.roomInstanceInfo.data().turnOrder.length) this.startNewRound()
   }
 
   async ifNextPlayerNotHereRemove() {
+    // get all players in the room
     const roomInstanceUpdated = await db
       .collection(`rooms/${this.roomId}/players`)
       .get()
     let playersHere = {}
-    roomInstanceUpdated.forEach(player => {
+    // we put players into an object
+    roomInstanceUpdated.docs.forEach(player => {
       playersHere[player.id] = player.id
     })
-    if (!playersHere.hasOwnProperty(this.turnOrderArray[0])) {
+    console.log('PLAYERS HERE', playersHere)
+    console.log('ifnextplayerfunction', this.turnOrderArray)
+    // if the player is not in the object, we shift them out of the array
+    if (!playersHere[this.turnOrderArray[0]]) {
+      console.log('infinitely looping')
       this.turnOrderArray.shift()
       this.ifNextPlayerNotHereRemove()
     }

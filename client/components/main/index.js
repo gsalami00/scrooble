@@ -24,12 +24,10 @@ export default class GameroomFinder extends Component {
       } else {
         const room = await db.collection('rooms').add({
           isFull: false,
-          round: 1,
-          // timer: 60,
+          round: 0,
           waitingRoom: 0,
           turnOrder: [],
-          chosenWord: '',
-          messageCount: 0
+          chosenWord: ''
         })
         await localStorage.setItem('room', room.id)
         this.props.history.push('/username-decider')
