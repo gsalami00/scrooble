@@ -126,7 +126,7 @@ export default class Canvas extends Component {
         })
         this.startTurnCountdown()
       }
-    }, 10000)
+    }, 75000)
   }
 
   async ifNextPlayerNotHereRemove() {
