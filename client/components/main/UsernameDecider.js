@@ -56,6 +56,16 @@ export default class UsernameDecider extends Component {
     }
   }
   render() {
-    return <div>Next turn starting soon...</div>
+    return (
+      <React.Fragment>
+        <div className="loading-text">Next turn starting soon...</div>
+        <br />
+        <div className="cssload-loader">
+          <div className="cssload-inner cssload-one" />
+          <div className="cssload-inner cssload-two" />
+          <div className="cssload-inner cssload-three" />
+        </div>
+      </React.Fragment>
+    )
   }
 }
