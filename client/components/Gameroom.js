@@ -70,13 +70,16 @@ export default class Gameroom extends Component {
   }
   countdown() {
     setInterval(() => {
-      if (this.state.time > 0) {
+      if (this.state.time >= 0) {
         this.setState({
           time: --this.state.time
         })
       }
-      if (this.state.time === 0) {
-        this.setState({hasPickedWord: false})
+      if (this.state.time < 0) {
+        this.setState({
+          hasPickedWord: false,
+          time: 75
+        })
       }
     }, 1000)
   }
