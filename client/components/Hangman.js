@@ -11,6 +11,10 @@ export default class Hangman extends Component {
     } else {
       chosenWord = chosenWord.split('').join(' ')
     }
-    return <div>{chosenWord}</div>
+    return (
+      <React.Fragment>
+        <div className="hangman">{chosenWord}</div>
+      </React.Fragment>
+    )
   }
 }

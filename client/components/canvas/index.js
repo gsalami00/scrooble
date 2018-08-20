@@ -62,6 +62,7 @@ export default class Canvas extends Component {
     const updatedRoomInstanceInfo = await db.doc(`rooms/${this.roomId}`).get()
     this.turnOrderArray = [...updatedRoomInstanceInfo.data().turnOrder]
     this.drawer = this.turnOrderArray[0]
+    console.log('startnewround', this.drawer, this.username)
     const updatedRoomInfo = await db.doc(`rooms/${this.roomId}`).get()
     const currentRoundUpdated = updatedRoomInfo.data().round + 1
     if (currentRoundUpdated > 4) {
@@ -71,6 +72,8 @@ export default class Canvas extends Component {
         round: currentRoundUpdated
       })
     }
+    console.log('reached before this.startTurnCountdown')
+    this.startTurnCountdown()
   }
   drawCanvas(start, end, strokeColor = 'black', lineWidth) {
     const ctx = this.theCanvas.getContext('2d')
@@ -93,16 +96,23 @@ export default class Canvas extends Component {
   startTurnCountdown() {
     setTimeout(async () => {
       if (this.drawer === this.username && this.turnOrderArray.length === 1) {
-        return this.startNewRound()
+        this.startNewRound()
+      } else {
+        console.log('before shift', this.turnOrderArray)
+        this.turnOrderArray.shift()
+        console.log('after shift', this.turnOrderArray)
+        await this.ifNextPlayerNotHereRemove()
+        this.drawer = this.turnOrderArray[0]
+        console.log('this.drawer + username', this.drawer, this.username)
+        if (this.drawer === this.username) {
+          console.log('reached update')
+          await db.doc(`rooms/${this.roomId}`).update({
+            turnOrder: [...this.turnOrderArray]
+          })
+        }
       }
-      this.turnOrderArray.shift()
-      this.drawer = this.turnOrderArray[0]
-      await this.ifNextPlayerNotHereRemove()
-      await db.doc(`rooms/${this.roomId}`).update({
-        turnOrder: [...this.turnOrderArray]
-      })
       // await this.clearCanvas()
-    }, 75000)
+    }, 10000)
 
     // if (!this.roomInstanceInfo.data().turnOrder.length) this.startNewRound()
   }
@@ -112,12 +122,15 @@ export default class Canvas extends Component {
       .collection(`rooms/${this.roomId}/players`)
       .get()
     let playersHere = {}
-    roomInstanceUpdated.forEach(player => {
+    roomInstanceUpdated.docs.forEach(player => {
       playersHere[player.id] = player.id
     })
+    console.log('PLAYERS HERE', playersHere)
+    console.log(this.turnOrderArray)
     if (!playersHere.hasOwnProperty(this.turnOrderArray[0])) {
+      console.log('ifNextPlayerNotHere reached')
       this.turnOrderArray.shift()
-      this.ifNextPlayerNotHereRemove()
+      // this.ifNextPlayerNotHereRemove()
     }
   }
   handleMouseDown() {

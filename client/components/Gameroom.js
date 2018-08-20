@@ -34,7 +34,6 @@ export default class Gameroom extends Component {
       .collection('rooms')
       .doc(this.roomId)
       .onSnapshot(doc => {
-        console.log('turnOrder', doc.data().turnOrder)
         if (doc.data().turnOrder[0] === this.state.username) {
           this.setState({
             myTurn: true
@@ -86,14 +85,22 @@ export default class Gameroom extends Component {
   }
   render() {
     const {currentRound, time, canvasData} = this.state
-    console.log('this.state.chosenWord is', this.state.chosenWord)
     return (
       <div className="gameroom-body">
         <div className="navbar">
           <div className="gameroom-logo">
             <img src="logo-small.png" />
           </div>
-          <Hangman chosenWord={this.state.chosenWord} time={time} />
+          <div className="hangman-board">
+            <div className="guess-the-word">
+              <img src="guess-the-word.png" />
+            </div>
+            <Hangman
+              chosenWord={this.state.chosenWord}
+              time={time}
+              className="hangman"
+            />
+          </div>
           <div className="timer">
             <div className="timer-text">{time}</div>
           </div>

@@ -9,7 +9,7 @@ export default class GameroomFinder extends Component {
         let notFullRooms = []
         await db
           .collection('rooms')
-          .where('isFull', '==', true)
+          .where('gini', '==', true)
           .get()
           .then(querySnapshot => {
             querySnapshot.forEach(room => {
@@ -28,8 +28,7 @@ export default class GameroomFinder extends Component {
           // timer: 60,
           waitingRoom: 0,
           turnOrder: [],
-          chosenWord: '',
-          messageCount: 0
+          chosenWord: ''
         })
         await localStorage.setItem('room', room.id)
         this.props.history.push('/username-decider')
