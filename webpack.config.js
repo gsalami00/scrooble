@@ -15,6 +15,10 @@ module.exports = {
     extensions: ['.js', '.jsx']
   },
   devtool: 'source-map',
+  devServer: {
+    historyApiFallback: true,
+    index: './public/index.html'
+  },
   module: {
     rules: [
       {
