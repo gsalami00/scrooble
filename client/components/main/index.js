@@ -9,7 +9,11 @@ export default class GameroomFinder extends Component {
         let notFullRooms = []
         await db
           .collection('rooms')
+<<<<<<< HEAD
           .where('gini', '==', true)
+=======
+          .where('isFull', '==', false)
+>>>>>>> master
           .get()
           .then(querySnapshot => {
             querySnapshot.forEach(room => {
@@ -38,6 +42,16 @@ export default class GameroomFinder extends Component {
     }
   }
   render() {
-    return <div>Loading room...</div>
+    return (
+      <React.Fragment>
+        <div className="loading-text">Loading room...</div>
+        <br />
+        <div className="cssload-loader">
+          <div className="cssload-inner cssload-one" />
+          <div className="cssload-inner cssload-two" />
+          <div className="cssload-inner cssload-three" />
+        </div>
+      </React.Fragment>
+    )
   }
 }
