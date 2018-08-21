@@ -69,6 +69,7 @@ export default class Canvas extends Component {
     // incrementing round before updating anything
     const currentRoundUpdated = updatedRoomInfo.data().round + 1
     if (currentRoundUpdated > 3) {
+      this.props.renderWinner()
       //push people into home page if rounds have ended
       setTimeout(() => this.props.history.push('/'), 5000)
     } else if (

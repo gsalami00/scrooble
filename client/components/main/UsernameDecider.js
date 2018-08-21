@@ -25,7 +25,7 @@ export default class UsernameDecider extends Component {
       })
       const initialRoomInfo = await db.doc(`rooms/${gameRoomId}`).get()
       await db.doc(`rooms/${this.roomId}`).update({
-        waitingRoom: initialRoomInfo.data().waitingRoom + 1
+        waitingRoom: initialRoomInfo.data().waitingRoom + 1 || 1
       })
       const roomInfo = await db.doc(`rooms/${gameRoomId}`).get()
       let waitingRoom = roomInfo.data().waitingRoom
