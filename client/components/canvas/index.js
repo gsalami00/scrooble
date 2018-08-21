@@ -254,7 +254,7 @@ export default class Canvas extends Component {
             width={834}
           />
         </div>
-        <div id="round-text">ROUND {this.round} OF 3</div>
+        {/* <div id="round-text">ROUND {this.round} OF 3</div> */}
         <div id="color-pallete">
           <button
             type="button"
