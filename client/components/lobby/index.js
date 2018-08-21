@@ -119,18 +119,25 @@ export default class Lobby extends Component {
     const allPlayers = this.state.players
     return (
       <React.Fragment>
-        {allPlayers.map(player => {
-          return (
-            <div className="playercard" key={player[0]}>
-              <PlayerCard
-                name={player[1]}
-                score={player[2]}
-                message={player[3]}
-              />
-            </div>
-          )
-        })}
-        <div>username said "this"</div>
+        <div className="players-title">
+          <img src="players.png" />
+        </div>
+        <div className="circle-left-brown" />
+        <div className="circle-right-brown" />
+        <div className="clear" />
+        <div className="player-cards-container">
+          {allPlayers.map(player => {
+            return (
+              <div className="playercard" key={player[0]}>
+                <PlayerCard
+                  name={player[1]}
+                  score={player[2]}
+                  message={player[3]}
+                />
+              </div>
+            )
+          })}
+        </div>
         <form onSubmit={this.handleSubmit}>
           <input
             type="text"
@@ -142,7 +149,9 @@ export default class Lobby extends Component {
             }
             className="input"
           />
-          <button type="submit">GO</button>
+          <button className="go-btn" type="submit">
+            GO
+          </button>
         </form>
       </React.Fragment>
     )
