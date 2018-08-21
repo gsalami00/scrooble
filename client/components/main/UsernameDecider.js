@@ -33,7 +33,13 @@ export default class UsernameDecider extends Component {
           }
         })
       } else {
-        this.props.history.push(`/${gameRoomId}`)
+        await db.doc(`rooms/${gameRoomId}`).onSnapshot(doc => {
+          if (
+            doc.data().turnOrder.length !== roomInfo.data().turnOrder.length
+          ) {
+            this.props.history.push(`/${gameRoomId}`)
+          }
+        })
       }
     } catch (err) {
       console.log(err)
