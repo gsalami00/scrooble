@@ -57,7 +57,12 @@ export default class Winner extends Component {
     console.log('winner is', winner)
     return (
       <div className="winner-card">
-        <div className="winner-text">{winner} IS THE WINNER</div>
+        <div className="winner-text">
+          <br />
+          <br />
+          <br />
+          {winner} IS THE WINNER
+        </div>
       </div>
     )
   }

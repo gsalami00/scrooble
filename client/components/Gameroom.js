@@ -93,7 +93,7 @@ export default class Gameroom extends Component {
     })
   }
   render() {
-    const {someoneWon, time, canvasData} = this.state
+    const {someoneWon, time, canvasData, myTurn, hasPickedWord} = this.state
     return (
       <div className="gameroom-body">
         <div className="navbar">
@@ -135,7 +135,7 @@ export default class Gameroom extends Component {
         </div> */}
         {/* <Link to="/">Home</Link> */}
         {someoneWon ? <Winner /> : ''}
-        {this.state.myTurn && !this.state.hasPickedWord ? (
+        {myTurn && !hasPickedWord ? (
           <ChooseWordPrompt handleChosenWord={this.handleChosenWord} />
         ) : (
           ''
