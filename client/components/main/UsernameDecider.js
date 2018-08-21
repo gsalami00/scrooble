@@ -4,6 +4,9 @@ import db from '../../../firestore.js'
 export default class UsernameDecider extends Component {
   constructor(props) {
     super(props)
+    this.state = {
+      morePlayers: true
+    }
     this.roomId = localStorage.getItem('room')
     this.usernameCheck = this.usernameCheck.bind(this)
   }
@@ -27,12 +30,14 @@ export default class UsernameDecider extends Component {
       const roomInfo = await db.doc(`rooms/${gameRoomId}`).get()
       let waitingRoom = roomInfo.data().waitingRoom
       if (waitingRoom < 2) {
+        this.setState({morePlayers: true})
         await db.doc(`rooms/${this.roomId}`).onSnapshot(room => {
           if (room.data().waitingRoom > 1) {
             this.props.history.push(`/${gameRoomId}`)
           }
         })
       } else {
+        this.setState({morePlayers: false})
         await db.doc(`rooms/${gameRoomId}`).onSnapshot(doc => {
           if (
             doc.data().turnOrder.length !== roomInfo.data().turnOrder.length
@@ -64,7 +69,11 @@ export default class UsernameDecider extends Component {
   render() {
     return (
       <React.Fragment>
-        <div className="loading-text">Next turn starting soon...</div>
+        {this.state.morePlayers ? (
+          <div className="loading-text">Waiting for more players...</div>
+        ) : (
+          <div className="loading-text">Next turn starting soon...</div>
+        )}
         <br />
         <div className="cssload-loader">
           <div className="cssload-inner cssload-one" />
