@@ -123,6 +123,7 @@ export default class Canvas extends Component {
         await db.doc(`rooms/${this.roomId}`).update({
           turnOrder: [...this.turnOrderArray]
         })
+        this.clearCanvas()
         this.startTurnCountdown()
       }
     }, 76000)
