@@ -85,7 +85,6 @@ export default class Gameroom extends Component {
   }
   handleChosenWord() {
     this.setState({hasPickedWord: true})
-    console.log(this.state)
   }
   render() {
     const {currentRound, time, canvasData} = this.state
