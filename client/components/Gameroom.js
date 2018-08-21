@@ -136,10 +136,7 @@ export default class Gameroom extends Component {
         {/* <Link to="/">Home</Link> */}
         {someoneWon ? <Winner /> : ''}
         {this.state.myTurn && !this.state.hasPickedWord ? (
-          <ChooseWordPrompt
-            handleChosenWord={this.handleChosenWord}
-            history={this.props.history}
-          />
+          <ChooseWordPrompt handleChosenWord={this.handleChosenWord} />
         ) : (
           ''
         )}
