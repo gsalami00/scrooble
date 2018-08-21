@@ -425,7 +425,7 @@ img.eraser {
 .winner-text {
 }
 
-.loading-text {
+.loading-text2 {
   font-size: 40px;
   text-align: center;
   margin: 10vw 30vw;
@@ -436,6 +436,20 @@ img.eraser {
   border-radius: 10px;
   background-color: rgba(169, 81, 81, 0.5);
 }
+
+.loading-text {
+  font-size: 40px;
+  text-align: center;
+  margin: 10vw 35vw;
+  color: white;
+  box-shadow: 0 0 1rem black;
+  display: inline-block;
+  padding: 3vw 5vw;
+  border-radius: 10px;
+  background-color: rgba(169, 81, 81, 0.5);
+}
+
+
 
 * {
   font-family: 'Lato', sans-serif;
