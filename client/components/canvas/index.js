@@ -17,6 +17,7 @@ export default class Canvas extends Component {
     this.color = 'black'
     this.lineWidth = 3
     this.drawer = ''
+    this.round = 1
 
     this.handleMouseDown = this.handleMouseDown.bind(this)
     this.handleMouseUp = this.handleMouseUp.bind(this)
@@ -80,6 +81,7 @@ export default class Canvas extends Component {
         round: currentRoundUpdated
       })
     }
+    this.round = currentRoundUpdated
     this.startTurnCountdown()
   }
   drawCanvas(start, end, strokeColor = 'black', lineWidth) {
@@ -232,39 +234,69 @@ export default class Canvas extends Component {
   }
   render() {
     return (
-      <div
-        onMouseDown={this.handleMouseDown}
-        onMouseMove={this.handleMouseMove}
-        onMouseUp={this.handleMouseUp}
-        onMouseOut={this.handleMouseUp}
-        onClick={this.getDrawing}
-      >
-        {/* {this.turnOrderArray[0] === this.username ? null : ( */}
-        {/* <button className="join-btn" type="button" onClick={this.getDrawing}>
+      <React.Fragment>
+        <div
+          onMouseDown={this.handleMouseDown}
+          onMouseMove={this.handleMouseMove}
+          onMouseUp={this.handleMouseUp}
+          onMouseOut={this.handleMouseUp}
+          onClick={this.getDrawing}
+        >
+          {/* {this.turnOrderArray[0] === this.username ? null : ( */}
+          {/* <button className="join-btn" type="button" onClick={this.getDrawing}>
             Join
           </button> */}
-        {/* )} */}
-        <canvas
-          ref={canvas => (this.theCanvas = canvas)}
-          height={500}
-          width={500}
-        />
+          {/* )} */}
+          <canvas
+            ref={canvas => (this.theCanvas = canvas)}
+            height={593}
+            width={834}
+          />
+        </div>
+        <div id="round-text">ROUND {this.round} OF 3</div>
         <div id="color-pallete">
           <button
             type="button"
-            className="color-palette-square black"
-            onClick={() => this.changeColor('black')}
+            className="color-palette-square red"
+            onClick={() => this.changeColor('red')}
           />
+
+          <button
+            type="button"
+            className="color-palette-square black"
+            onClick={() => this.changeColor('#000000')}
+          />
+
+          <button
+            type="button"
+            className="color-palette-square orange"
+            onClick={() => this.changeColor('#ff6600')}
+          />
+
           <button
             type="button"
             className="color-palette-square white"
             onClick={() => this.changeColor('#ffffff')}
           />
+
+          <button
+            type="button"
+            className="color-palette-square yellow"
+            onClick={() => this.changeColor('#ffd200')}
+          />
+
           <button
             type="button"
             className="color-palette-square gray"
             onClick={() => this.changeColor('#555555')}
           />
+
+          <button
+            type="button"
+            className="color-palette-square green"
+            onClick={() => this.changeColor('#05be16')}
+          />
+
           <button
             type="button"
             className="color-palette-square brown"
@@ -272,38 +304,8 @@ export default class Canvas extends Component {
           />
           <button
             type="button"
-            className="color-palette-square red"
-            onClick={() => this.changeColor('#ff0000')}
-          />
-          <button
-            type="button"
-            className="color-palette-square orange"
-            onClick={() => this.changeColor('#ff6600')}
-          />
-          <button
-            type="button"
-            className="color-palette-square yellow"
-            onClick={() => this.changeColor('#ffd200')}
-          />
-          <button
-            type="button"
-            className="color-palette-square green"
-            onClick={() => this.changeColor('#05be16')}
-          />
-          <button
-            type="button"
             className="color-palette-square blue"
             onClick={() => this.changeColor('#0073e9')}
-          />
-          <button
-            type="button"
-            className="color-palette-square violet"
-            onClick={() => this.changeColor('#7d0087')}
-          />
-          <button
-            type="button"
-            className="color-palette-square pink"
-            onClick={() => this.changeColor('#ff007d')}
           />
           <button
             type="button"
@@ -314,11 +316,23 @@ export default class Canvas extends Component {
           </button>
           <button
             type="button"
+            className="color-palette-square violet"
+            onClick={() => this.changeColor('#7d0087')}
+          />
+          <button
+            type="button"
             className="color-palette-square brush-medium"
             onClick={() => this.changeBrushStrokeSize(7)}
           >
             &#9679;
           </button>
+
+          <button
+            type="button"
+            className="color-palette-square pink"
+            onClick={() => this.changeColor('#ff007d')}
+          />
+
           <button
             type="button"
             className="color-palette-square brush-large"
@@ -328,7 +342,7 @@ export default class Canvas extends Component {
           </button>
           <button
             type="button"
-            className="color-palette-square white"
+            className="color-palette-square white right"
             onClick={() => this.changeColor('#ffffff')}
           >
             <img className="eraser" src="eraser.png" />
@@ -340,8 +354,9 @@ export default class Canvas extends Component {
           >
             clear
           </button>
+          <div className="clear" />
         </div>
-      </div>
+      </React.Fragment>
     )
   }
 }

@@ -98,6 +98,9 @@ export default class Gameroom extends Component {
             <div className="guess-the-word">
               <img src="guess-the-word.png" />
             </div>
+            <div className="circle-left" />
+            <div className="circle-right" />
+            <div className="clear" />
             <Hangman
               chosenWord={this.state.chosenWord}
               time={time}
@@ -107,12 +110,16 @@ export default class Gameroom extends Component {
           <div className="timer">
             <div className="timer-text">{time}</div>
           </div>
+          <div className="clear" />
         </div>
-        <div className="lobbybox">
-          <Lobby time={time} myTurn={this.state.myTurn} />
-        </div>
-        <div className="canvas">
-          <Canvas canvasData={canvasData} />
+        <div className="gameroom-container clear">
+          <div className="lobbybox">
+            <Lobby time={time} myTurn={this.state.myTurn} />
+          </div>
+          <div className="canvas">
+            <Canvas canvasData={canvasData} />
+          </div>
+          <div className="clear" />
         </div>
         {/* <div className="chatbox">
           <Chat
@@ -120,7 +127,7 @@ export default class Gameroom extends Component {
             username={this.state.username}
           />
         </div> */}
-        <Link to="/">Home</Link>
+        {/* <Link to="/">Home</Link>
         {currentRound > 3 ? <Winner /> : ''}
         {this.state.myTurn && !this.state.hasPickedWord ? (
           <ChooseWordPrompt
@@ -129,7 +136,7 @@ export default class Gameroom extends Component {
           />
         ) : (
           ''
-        )}
+        )} */}
       </div>
     )
   }
