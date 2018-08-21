@@ -133,7 +133,7 @@ export default class Gameroom extends Component {
             username={this.state.username}
           />
         </div> */}
-        <Link to="/">Home</Link>
+        {/* <Link to="/">Home</Link> */}
         {someoneWon ? <Winner /> : ''}
         {this.state.myTurn && !this.state.hasPickedWord ? (
           <ChooseWordPrompt
