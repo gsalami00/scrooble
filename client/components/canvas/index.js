@@ -120,6 +120,11 @@ export default class Canvas extends Component {
   startTurnCountdown() {
     // after 10 or 75 seconds, execute the following
     setTimeout(async () => {
+      await db.doc(`rooms/${this.roomId}/players/${this.username}`).update({
+        message: ''
+      })
+    }, 75000)
+    setTimeout(async () => {
       if (this.turnOrderArray.length <= 1) {
         // instead of shifting off last person, we start new round
         this.turnOrderArray = []

@@ -5,11 +5,13 @@ export default class Hangman extends Component {
     super(props)
   }
   render() {
-    let {chosenWord, time} = this.props
-    if (time > 0) {
-      chosenWord = '_ '.repeat(chosenWord.length).slice(0, -1)
-    } else {
-      chosenWord = chosenWord.split('').join(' ')
+    let {chosenWord, time, myTurn} = this.props
+    if (!myTurn) {
+      if (time > 0) {
+        chosenWord = '_ '.repeat(chosenWord.length).slice(0, -1)
+      } else {
+        chosenWord = chosenWord.split('').join(' ')
+      }
     }
     return (
       <React.Fragment>

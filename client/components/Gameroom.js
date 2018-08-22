@@ -110,6 +110,7 @@ export default class Gameroom extends Component {
             <Hangman
               chosenWord={this.state.chosenWord}
               time={time}
+              myTurn={myTurn}
               className="hangman"
             />
           </div>
