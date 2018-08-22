@@ -446,6 +446,9 @@ img.eraser {
 }
 
 .winner-text {
+  text-align: center;
+  font-size: 30px;
+  color: #ffffff;
 }
 
 .loading-text2 {

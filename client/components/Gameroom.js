@@ -15,12 +15,13 @@ export default class Gameroom extends Component {
     this.state = {
       username: localStorage.getItem('username'),
       canvasData: [],
-      currentRound: 0,
+      someoneWon: false,
       time: 75,
       hasPickedWord: false,
-      myTurn: '',
+      myTurn: false,
       chosenWord: ''
     }
+    this.renderWinner = this.renderWinner.bind(this)
     this.handleChosenWord = this.handleChosenWord.bind(this)
     this.roomId = location.pathname.slice(1)
     this.roomInstanceInfo = ''
@@ -86,8 +87,13 @@ export default class Gameroom extends Component {
   handleChosenWord() {
     this.setState({hasPickedWord: true})
   }
+  renderWinner() {
+    this.setState({
+      someoneWon: true
+    })
+  }
   render() {
-    const {currentRound, time, canvasData} = this.state
+    const {someoneWon, time, canvasData, myTurn, hasPickedWord} = this.state
     return (
       <div className="gameroom-body">
         <div className="navbar">
@@ -104,6 +110,7 @@ export default class Gameroom extends Component {
             <Hangman
               chosenWord={this.state.chosenWord}
               time={time}
+              myTurn={myTurn}
               className="hangman"
             />
           </div>
@@ -117,7 +124,11 @@ export default class Gameroom extends Component {
             <Lobby time={time} myTurn={this.state.myTurn} />
           </div>
           <div className="canvas">
-            <Canvas canvasData={canvasData} />
+            <Canvas
+              canvasData={canvasData}
+              renderWinner={this.renderWinner}
+              history={this.props.history}
+            />
           </div>
           <div className="clear" />
         </div>
@@ -127,16 +138,13 @@ export default class Gameroom extends Component {
             username={this.state.username}
           />
         </div> */}
-        {/* <Link to="/">Home</Link>
-        {currentRound > 3 ? <Winner /> : ''}
-        {this.state.myTurn && !this.state.hasPickedWord ? (
-          <ChooseWordPrompt
-            handleChosenWord={this.handleChosenWord}
-            history={this.props.history}
-          />
+        {/* <Link to="/">Home</Link> */}
+        {someoneWon ? <Winner /> : ''}
+        {myTurn && !hasPickedWord ? (
+          <ChooseWordPrompt handleChosenWord={this.handleChosenWord} />
         ) : (
           ''
-        )} */}
+        )}
       </div>
     )
   }
