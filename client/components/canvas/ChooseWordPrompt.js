@@ -94,7 +94,6 @@ export default class ChooseWordPrompt extends Component {
                     >
                       {word[1]}
                     </button>
-                    <br />
                   </div>
                 )
               })}
