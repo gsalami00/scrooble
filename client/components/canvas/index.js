@@ -122,6 +122,7 @@ export default class Canvas extends Component {
     setTimeout(async () => {
       if (this.turnOrderArray.length <= 1) {
         // instead of shifting off last person, we start new round
+        this.turnOrderArray = []
         this.startNewRound()
       } else {
         console.log('before shift', this.turnOrderArray)
