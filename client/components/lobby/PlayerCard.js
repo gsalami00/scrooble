@@ -3,15 +3,22 @@ import React, {Component} from 'react'
 export default class PlayerCard extends Component {
   constructor(props) {
     super(props)
-    this.state = {}
+    this.state = {
+    }
   }
   render() {
-    const {name, score, message} = this.props
+    const {idx, name, points, message, showBubble} = this.props
     return (
       <React.Fragment>
-        <div>{name}</div>
-        <div>points: {score}</div>
-        <div>{message}</div>
+        <div className="single-player-container" key={idx}>
+          <div className="playercard">
+            <div>{name}</div>
+            <div>points: {points}</div>
+          </div>
+          {
+            showBubble ? <div className="message">{message}</div> : ''
+          }
+        </div>
       </React.Fragment>
     )
   }

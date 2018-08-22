@@ -18,7 +18,8 @@ export default class UsernameDecider extends Component {
         myTurn: false,
         guessedWord: false,
         username: finalUsername,
-        message: ''
+        message: '',
+        showBubble: false
       })
       const initialRoomInfo = await db.doc(`rooms/${gameRoomId}`).get()
       await db.doc(`rooms/${this.roomId}`).update({
