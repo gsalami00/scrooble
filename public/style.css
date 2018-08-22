@@ -189,6 +189,20 @@ body {
   text-align: center;
   box-shadow: 0 0 1px #000000;
 }
+.message:after {
+	content: '';
+	position: absolute;
+	left: 0;
+	top: 50%;
+	width: 0;
+	height: 0;
+	border: 0.906em solid transparent;
+	border-right-color: #ecf9ff;
+	border-left: 0;
+	border-bottom: 0;
+	margin-top: -0.453em;
+	margin-left: -0.906em;
+}
 
 .do-display {
   display: inline-block;
