@@ -16,7 +16,7 @@ export default class Gameroom extends Component {
       username: localStorage.getItem('username'),
       canvasData: [],
       someoneWon: false,
-      time: 75,
+      time: 45,
       hasPickedWord: false,
       myTurn: false,
       chosenWord: ''
@@ -79,7 +79,7 @@ export default class Gameroom extends Component {
       if (this.state.time < 0) {
         this.setState({
           hasPickedWord: false,
-          time: 75
+          time: 45
         })
       }
     }, 1000)

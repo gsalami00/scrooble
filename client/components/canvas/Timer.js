@@ -9,7 +9,7 @@ export default class Timer extends Component {
   constructor() {
     super()
     this.state = {
-      time: 75
+      time: 45
     }
     //this.countdown = this.countdown.bind(this)
   }
