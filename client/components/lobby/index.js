@@ -1,6 +1,6 @@
-import PlayerCard from './PlayerCard'
 import React, {Component} from 'react'
 import db from '../../../firestore'
+import PlayerCard from './PlayerCard'
 
 // winner screen
 // shift for the next drawer so next person gets choosewordprompt
@@ -18,6 +18,7 @@ export default class Lobby extends Component {
       score: 0
     }
     // this.chatId = ''
+    this.chatBubble = React.createRef()
     this.roomId = location.pathname.slice(1)
     this.username = localStorage.getItem('username')
     this.handleChange = this.handleChange.bind(this)
@@ -38,7 +39,8 @@ export default class Lobby extends Component {
               idx,
               player.data().username,
               player.data().score,
-              player.data().message
+              player.data().message,
+              player.data().showBubble
             ])
           })
           if (playerArr.length) {
@@ -105,12 +107,23 @@ export default class Lobby extends Component {
         }
       } else {
         await db.doc(`rooms/${this.roomId}/players/${this.username}`).update({
-          message: 'NAUGHTY-NAUGHTY! (I tried guessing...)'
+          message: "I'm drawing!!"
         })
       }
       this.setState({
         message: ''
       })
+      await db.doc(`rooms/${this.roomId}/players/${this.username}`).set({
+        showBubble: true
+      }, {merge:true})
+      setTimeout(async () => {
+        await db.doc(`rooms/${this.roomId}/players/${this.username}`).set(
+          {
+            showBubble: false
+          },
+          {merge: true}
+        )
+      }, 2000)
     } catch (err) {
       console.log(err)
     }
@@ -128,13 +141,13 @@ export default class Lobby extends Component {
         <div className="player-cards-container">
           {allPlayers.map(player => {
             return (
-              <div className="playercard" key={player[0]}>
-                <PlayerCard
-                  name={player[1]}
-                  score={player[2]}
-                  message={player[3]}
-                />
-              </div>
+              <PlayerCard
+                key={player[0]}
+                name={player[1]}
+                points={player[2]}
+                message={player[3]}
+                showBubble={player[4]}
+              />
             )
           })}
         </div>
@@ -157,50 +170,3 @@ export default class Lobby extends Component {
     )
   }
 }
-
-// import PlayerCard from './PlayerCard'
-// import React, {Component} from 'react'
-// import db from '../../../firestore'
-
-// export default class Lobby extends Component {
-//   constructor() {
-//     super()
-//     this.roomId = location.pathname.slice(1)
-//     this.state = {
-//       players: []
-//     }
-//   }
-//   async componentDidMount() {
-//     let playerArr = []
-//     const players = await db
-//       .collection('rooms')
-//       .doc(this.roomId)
-//       .collection('players')
-//       .get()
-//       .then(querySnapshot => {
-//         querySnapshot.forEach(player => {
-//           playerArr.push(player.data().username)
-//         })
-//       })
-//       .catch(err => {
-//         console.log('Error geting documents: ', err)
-//       })
-//     this.setState({
-//       players: playerArr
-//     })
-//   }
-//   render() {
-//     const allPlayers = this.state.players
-//     return (
-//       <React.Fragment>
-//         {allPlayers.map((player, idx) => {
-//           return (
-//             <div className="playercard" key={idx}>
-//               <PlayerCard name={player[1]} score={player[2]} />
-//             </div>
-//           )
-//         })}
-//       </React.Fragment>
-//     )
-//   }
-// }
