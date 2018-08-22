@@ -6,7 +6,9 @@ import db, {fdb} from '../../../firestore.js'
 export default class Canvas extends Component {
   constructor() {
     super()
-
+    this.state = {
+      round: 0
+    }
     this.canvasData = []
     this.record = false
     this.roomId = location.pathname.slice(1)
@@ -17,7 +19,6 @@ export default class Canvas extends Component {
     this.color = 'black'
     this.lineWidth = 3
     this.drawer = ''
-    this.round = 1
 
     this.handleMouseDown = this.handleMouseDown.bind(this)
     this.handleMouseUp = this.handleMouseUp.bind(this)
@@ -41,11 +42,22 @@ export default class Canvas extends Component {
     }
     this.drawingDocId = 'canvas'
     this.roomInstanceInfo = await db.doc(`rooms/${this.roomId}`).get()
+    this.getDrawing()
     if (
       this.roomInstanceInfo.data().turnOrder === undefined ||
       !this.roomInstanceInfo.data().turnOrder.length
     ) {
-      this.startNewRound()
+      await this.startNewRound()
+    } else {
+      await db
+        .collection('rooms')
+        .doc(this.roomId)
+        .onSnapshot(doc => {
+          if (this.turnOrderArray.length !== doc.data().turnOrder.length) {
+            this.turnOrderArray = doc.data().turnOrder
+            this.startTurnCountdown()
+          }
+        })
     }
   }
   async startNewRound() {
@@ -53,15 +65,15 @@ export default class Canvas extends Component {
     const playersCollectionInfo = await db
       .collection(`rooms/${this.roomId}/players/`)
       .get()
-    const turnArray = []
-    playersCollectionInfo.forEach(player => turnArray.push(player.id))
+    // const turnArray = []
+    playersCollectionInfo.forEach(player => this.turnOrderArray.push(player.id))
     // updating turnOrder array in firebase
     await db.doc(`rooms/${this.roomId}`).update({
-      turnOrder: [...turnArray]
+      turnOrder: [...this.turnOrderArray]
     })
-    const updatedRoomInstanceInfo = await db.doc(`rooms/${this.roomId}`).get()
+    // const updatedRoomInstanceInfo = await db.doc(`rooms/${this.roomId}`).get()
     // getting turnOrder array from firebase and updating this.turnOrderArray
-    this.turnOrderArray = [...updatedRoomInstanceInfo.data().turnOrder]
+    // this.turnOrderArray = [...updatedRoomInstanceInfo.data().turnOrder]
     // assigning drawer to user at 0th index of turnOrderArray
     // this.drawer = this.turnOrderArray[0]
     // console.log('startnewround', this.drawer, this.username)
@@ -81,8 +93,10 @@ export default class Canvas extends Component {
       await db.doc(`rooms/${this.roomId}`).update({
         round: currentRoundUpdated
       })
+      this.setState({
+        round: currentRoundUpdated
+      })
     }
-    this.round = currentRoundUpdated
     this.startTurnCountdown()
   }
   drawCanvas(start, end, strokeColor = 'black', lineWidth) {
@@ -124,7 +138,7 @@ export default class Canvas extends Component {
         await db.doc(`rooms/${this.roomId}`).update({
           turnOrder: [...this.turnOrderArray]
         })
-        this.clearCanvas()
+        await this.clearCanvas()
         this.startTurnCountdown()
       }
     }, 76000)
@@ -242,7 +256,7 @@ export default class Canvas extends Component {
           onMouseMove={this.handleMouseMove}
           onMouseUp={this.handleMouseUp}
           onMouseOut={this.handleMouseUp}
-          onClick={this.getDrawing}
+          //onClick={this.getDrawing}
         >
           {/* {this.turnOrderArray[0] === this.username ? null : ( */}
           {/* <button className="join-btn" type="button" onClick={this.getDrawing}>
@@ -255,7 +269,7 @@ export default class Canvas extends Component {
             width={1110}
           />
         </div>
-        {/* <div id="round-text">ROUND {this.round} OF 3</div> */}
+        <div id="round-text">ROUND {this.state.round} OF 3</div>
         <div id="color-pallete">
           <button
             type="button"
