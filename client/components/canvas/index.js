@@ -83,7 +83,13 @@ export default class Canvas extends Component {
     if (currentRoundUpdated > 3) {
       this.props.renderWinner()
       //push people into home page if rounds have ended
-      setTimeout(() => this.props.history.push('/'), 5000)
+      // setTimeout(() => this.props.history.push('/'), 5000)
+      await db.doc(`rooms/${this.roomId}`).update({
+        isGameOver: true
+      })
+      await setInterval(() => {
+        console.log('GAME OVER!')
+      }, 100000000)
     } else if (
       currentRoundUpdated < 4 &&
       this.turnOrderArray[0] == this.username
@@ -93,6 +99,13 @@ export default class Canvas extends Component {
       await db.doc(`rooms/${this.roomId}`).update({
         round: currentRoundUpdated
       })
+      this.setState({
+        round: currentRoundUpdated
+      })
+    } else if (
+      currentRoundUpdated < 4 &&
+      this.turnOrderArray[0] !== this.username
+    ) {
       this.setState({
         round: currentRoundUpdated
       })
@@ -369,13 +382,21 @@ export default class Canvas extends Component {
           >
             <img className="eraser" src="eraser.png" />
           </button>
-          <button
-            type="button"
-            className="clear-btn white"
-            onClick={() => this.clearCanvas()}
-          >
-            clear
-          </button>
+
+          {this.username === this.turnOrderArray[0] ? (
+            <button
+              type="button"
+              className="clear-btn white"
+              onClick={() => this.clearCanvas()}
+            >
+              clear
+            </button>
+          ) : (
+            <button type="button" className="clear-btn white">
+              clear
+            </button>
+          )}
+
           <div className="clear" />
         </div>
       </React.Fragment>
