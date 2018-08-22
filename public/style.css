@@ -35,11 +35,11 @@ body {
 }
 
 .gameroom-logo {
-  width: 21vw;
+  width: 16%;
   height: 158px;
   float: left;
   margin-top: 10px;
-  margin-left: 20px;
+  margin-left: 6.5%;
 }
 
 .hangman-board {
@@ -49,7 +49,7 @@ body {
   height: 100px;
   display: inline-block;
   margin-top: 40px;
-  margin-left: 11.75%;
+  margin-left: 10.7%;
   box-shadow: #333333 0px 3px 20px;
 }
 
@@ -110,7 +110,7 @@ body {
 }
 
 .player-cards-container {
-  min-height: 29.5vw;
+  min-height: 82%;
 }
 
 .gameroom-container {
@@ -235,7 +235,7 @@ body {
   margin: 0;
   display: inline-block;
   float: right;
-  margin-top: -575px;
+  margin-top: -802px;
   margin-right: -9vw;
 }
 
@@ -338,21 +338,14 @@ img.eraser {
   display: inline-block;
   float: right;
   margin-top: 40px;
-  margin-right: 39px;
+  margin-right: 7.2vw;
 }
 
 .timer-text {
   font-size: 30px;
   text-align: center;
-  /* background-color: #ff9393;
-  width: 30px;
-  height: 30px;
-  padding-top: 20px;
-  padding-bottom: 20px;
-  border-radius: 50%;
-  padding-left: 20px;
-  padding-right: 20px; */
   line-height: 100px;
+  width: 100%;
 }
 
 .play-card {
@@ -465,6 +458,57 @@ img.eraser {
   color: #ffffff;
 }
 
+.choose-word-card {
+  background-color: rgba(0, 0, 0, 0.7);
+  display: inline-block;
+  position: absolute;
+  top: 17vw;
+  left: 8vw;
+  height: 19vw;
+  width: 83vw;
+  border-radius: 1vw;
+}
+
+.choose-word-text {
+  text-align: center;
+  font-size: 30px;
+  color: #ffffff;
+}
+
+.choose-word-button {
+  font-family: Verdana;
+  background-color: orange;
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 7px;
+}
+
+.choose-word-button:hover {
+  font-family: Verdana;
+  background-color: rgb(255, 121, 59);
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 7px;
+}
+
+.choose-buttons-margin {
+  margin-top: 10px;
+}
+
 .loading-text2 {
   font-size: 40px;
   text-align: center;
@@ -488,8 +532,6 @@ img.eraser {
   border-radius: 10px;
   background-color: rgba(169, 81, 81, 0.5);
 }
-
-
 
 * {
   font-family: 'Lato', sans-serif;
