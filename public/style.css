@@ -169,6 +169,29 @@ body {
   padding: 1vw 1vw;
   border-radius: 10px;
   border: 3px solid #e15c11;
+  width: 14.5vw;
+  display: inline-block;
+}
+
+.single-player-container {
+  width: 42vw;
+}
+
+.message {
+  display: inline-block;
+  background-color: #ecf9ff;
+  position: absolute;
+  margin: 1.5vw 1vw;
+  padding: 1vw 1vw;
+  height: 1.5vw;
+  width: 14vw;
+  border-radius: 1vw;
+  text-align: center;
+  box-shadow: 0 0 1px #000000;
+}
+
+.do-display {
+  display: inline-block;
 }
 
 .canvas {
@@ -428,6 +451,7 @@ img.eraser {
   color: #ffffff;
 }
 
+<<<<<<< HEAD
 .choose-word-card {
   background-color: rgba(0, 0, 0, 0.7);
   display: inline-block;
@@ -480,6 +504,9 @@ img.eraser {
 }
 
 .loading-text {
+=======
+.loading-text2 {
+>>>>>>> master
   font-size: 40px;
   text-align: center;
   margin: 10vw 30vw;
@@ -490,6 +517,20 @@ img.eraser {
   border-radius: 10px;
   background-color: rgba(169, 81, 81, 0.5);
 }
+
+.loading-text {
+  font-size: 40px;
+  text-align: center;
+  margin: 10vw 35vw;
+  color: white;
+  box-shadow: 0 0 1rem black;
+  display: inline-block;
+  padding: 3vw 5vw;
+  border-radius: 10px;
+  background-color: rgba(169, 81, 81, 0.5);
+}
+
+
 
 * {
   font-family: 'Lato', sans-serif;
