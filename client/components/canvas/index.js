@@ -142,7 +142,7 @@ export default class Canvas extends Component {
         await this.clearCanvas()
         this.startTurnCountdown()
       }
-    }, 16000)
+    }, 76000)
   }
 
   async ifNextPlayerNotHereRemove() {

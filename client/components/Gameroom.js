@@ -16,7 +16,7 @@ export default class Gameroom extends Component {
       username: localStorage.getItem('username'),
       canvasData: [],
       someoneWon: false,
-      time: 15,
+      time: 75,
       hasPickedWord: false,
       myTurn: false,
       chosenWord: ''
@@ -34,13 +34,13 @@ export default class Gameroom extends Component {
     await db
       .collection('rooms')
       .doc(this.roomId)
-      .onSnapshot(async doc => {
+      .onSnapshot(doc => {
         if (doc.data().turnOrder[0] === this.state.username) {
-          await this.setState({
+          this.setState({
             myTurn: true
           })
         } else {
-          await this.setState({
+          this.setState({
             myTurn: false
           })
         }
@@ -79,7 +79,7 @@ export default class Gameroom extends Component {
       if (this.state.time < 0) {
         this.setState({
           hasPickedWord: false,
-          time: 15
+          time: 75
         })
       }
     }, 1000)
