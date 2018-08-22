@@ -451,7 +451,6 @@ img.eraser {
   color: #ffffff;
 }
 
-<<<<<<< HEAD
 .choose-word-card {
   background-color: rgba(0, 0, 0, 0.7);
   display: inline-block;
@@ -503,10 +502,7 @@ img.eraser {
   margin-top: 10px;
 }
 
-.loading-text {
-=======
 .loading-text2 {
->>>>>>> master
   font-size: 40px;
   text-align: center;
   margin: 10vw 30vw;
@@ -529,8 +525,6 @@ img.eraser {
   border-radius: 10px;
   background-color: rgba(169, 81, 81, 0.5);
 }
-
-
 
 * {
   font-family: 'Lato', sans-serif;
