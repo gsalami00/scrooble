@@ -16,9 +16,9 @@ export default class Gameroom extends Component {
       username: localStorage.getItem('username'),
       canvasData: [],
       someoneWon: false,
-      time: 75,
+      time: 15,
       hasPickedWord: false,
-      myTurn: '',
+      myTurn: false,
       chosenWord: ''
     }
     this.renderWinner = this.renderWinner.bind(this)
@@ -36,11 +36,11 @@ export default class Gameroom extends Component {
       .doc(this.roomId)
       .onSnapshot(doc => {
         if (doc.data().turnOrder[0] === this.state.username) {
-          this.setState({
+          await this.setState({
             myTurn: true
           })
         } else {
-          this.setState({
+          await this.setState({
             myTurn: false
           })
         }
@@ -79,7 +79,7 @@ export default class Gameroom extends Component {
       if (this.state.time < 0) {
         this.setState({
           hasPickedWord: false,
-          time: 75
+          time: 15
         })
       }
     }, 1000)
@@ -123,7 +123,11 @@ export default class Gameroom extends Component {
             <Lobby time={time} myTurn={this.state.myTurn} />
           </div>
           <div className="canvas">
-            <Canvas canvasData={canvasData} renderWinner={this.renderWinner} />
+            <Canvas
+              canvasData={canvasData}
+              renderWinner={this.renderWinner}
+              history={this.props.history}
+            />
           </div>
           <div className="clear" />
         </div>
