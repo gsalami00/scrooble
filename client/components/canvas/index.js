@@ -7,7 +7,7 @@ export default class Canvas extends Component {
   constructor() {
     super()
     this.state = {
-      round: 0
+      round: 1
     }
     this.canvasData = []
     this.record = false
@@ -142,7 +142,7 @@ export default class Canvas extends Component {
         await this.clearCanvas()
         this.startTurnCountdown()
       }
-    }, 76000)
+    }, 16000)
   }
 
   async ifNextPlayerNotHereRemove() {
