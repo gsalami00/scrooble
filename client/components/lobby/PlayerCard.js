@@ -10,7 +10,7 @@ export default class PlayerCard extends Component {
     return (
       <React.Fragment>
         <div>{name}</div>
-        <div>points: {score}</div>
+        <div>Points: {score}</div>
         <div>{message}</div>
       </React.Fragment>
     )
