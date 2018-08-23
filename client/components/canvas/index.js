@@ -136,7 +136,7 @@ export default class Canvas extends Component {
       await db.doc(`rooms/${this.roomId}/players/${this.username}`).update({
         message: ''
       })
-    }, 45000)
+    }, 30000)
     setTimeout(async () => {
       if (this.turnOrderArray.length <= 1) {
         // instead of shifting off last person, we start new round
@@ -160,7 +160,7 @@ export default class Canvas extends Component {
         await this.clearCanvas()
         this.startTurnCountdown()
       }
-    }, 46000)
+    }, 31000)
   }
 
   async ifNextPlayerNotHereRemove() {
