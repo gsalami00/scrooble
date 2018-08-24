@@ -171,6 +171,7 @@ body {
   border: 3px solid #e15c11;
   width: 14.5vw;
   display: inline-block;
+  font-size: 2em;
 }
 
 .single-player-container {
@@ -182,26 +183,28 @@ body {
   background-color: #ecf9ff;
   position: absolute;
   margin: 1.5vw 1vw;
-  padding: 1vw 1vw;
-  height: 1.5vw;
+  padding: 1.4vw 1vw 0.75vw;
+  height: 3vw;
   width: 14vw;
   border-radius: 1vw;
   text-align: center;
   box-shadow: 0 0 1px #000000;
+  font-size: 2em;
+  vertical-align: middle;
 }
 .message:after {
-	content: '';
-	position: absolute;
-	left: 0;
-	top: 50%;
-	width: 0;
-	height: 0;
-	border: 0.906em solid transparent;
-	border-right-color: #ecf9ff;
-	border-left: 0;
-	border-bottom: 0;
-	margin-top: -0.453em;
-	margin-left: -0.906em;
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 0;
+  height: 0;
+  border: 0.906em solid transparent;
+  border-right-color: #ecf9ff;
+  border-left: 0;
+  border-bottom: 0;
+  margin-top: -0.453em;
+  margin-left: -0.906em;
 }
 
 .do-display {
@@ -473,7 +476,7 @@ img.eraser {
   text-align: center;
   font-size: 30px;
   color: #ffffff;
-  margin-top: 55px;
+  margin-top: 35px;
 }
 
 .choose-word-button {
@@ -486,7 +489,7 @@ img.eraser {
   text-align: center;
   text-decoration: none;
   display: inline-block;
-  font-size: 16px;
+  font-size: 1em;
   margin: 4px 2px;
   cursor: pointer;
   border-radius: 7px;
@@ -501,7 +504,7 @@ img.eraser {
   text-align: center;
   text-decoration: none;
   display: inline-block;
-  font-size: 16px;
+  font-size: 1em;
   margin: 4px 2px;
   cursor: pointer;
   border-radius: 7px;
