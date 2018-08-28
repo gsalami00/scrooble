@@ -1,4 +1,4 @@
-# [Scrooble](www.scrooble.io)
+# [Scrooble](https://www.scrooble.io/)
 
 Create or join a game and start guessing what a player is drawing!
 
