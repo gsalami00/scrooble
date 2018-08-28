@@ -1,10 +1,10 @@
-## [Scrooble](https://www.google.com)
+# [Scrooble](https://www.google.com)
 
 Create or join a game and start guessing what a player is drawing!
 
 Scrooble is a multiplayer game in your browser that lets you choose and draw a word while your friends race against each other to be the first to guess it. Points are awarded based on a timer, where the quicker you guess the word, the more points you get. At the end of the game, the player with the most points wins. The role of the drawer cycles between players until three rounds have passed.
 
-# Features
+## Features
 
 * Create a new game or join an ongoing game.
 * Pick from a list of 3 words when it's your turn to draw.
@@ -13,7 +13,7 @@ Scrooble is a multiplayer game in your browser that lets you choose and draw a w
 * Guess the word being drawn.
 * Get points based on how quickly you guess the word being drawn.
 
-# Future Goals
+## Future Goals
 
 * Users can sign up and log in, in addition to playing as a guest.
 * Logged in players can view their high scores.
