@@ -1,4 +1,7 @@
 # [Scrooble](https://www.scrooble.io/)
+## By: Leo Crossman, Francisco Huergo, Michael Lin, and Geraldine Salamat
+
+View our demo video [here](https://www.youtube.com/watch?v=xAM8xEW_qvo&list=PLx0iOsdUOUmkbGblSOJyBb7ZLLfKtrAFo&index=17&t=1s).
 
 Create or join a game and start guessing what a player is drawing!
 
