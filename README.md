@@ -1,4 +1,4 @@
-# [Scrooble]
+# Scrooble
 ## By: Leo Crossman, Francisco Huergo, Michael Lin, and Geraldine Salamat
 
 View our demo video [here](https://www.youtube.com/watch?v=xAM8xEW_qvo&list=PLx0iOsdUOUmkbGblSOJyBb7ZLLfKtrAFo&index=17&t=1s).
