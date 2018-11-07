@@ -21,6 +21,5 @@ Scrooble is a multiplayer game in your browser that lets you choose and draw a w
 * Users can sign up and log in, in addition to playing as a guest.
 * Logged in players can view their high scores.
 * Users can create a room and send the URL to other people so that they can join the game.
-* Players should not be able to write letters.
 * Users will be able to kick out other users who don't play well.
 * After a certain amount of time of inactivity, the user will be kicked out of the room.
