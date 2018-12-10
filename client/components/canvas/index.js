@@ -1,7 +1,7 @@
 'use strict'
 
-import React, {Component} from 'react'
-import db, {fdb} from '../../../firestore.js'
+import React, { Component } from 'react'
+import db, { fdb } from '../../../firestore.js'
 
 export default class Canvas extends Component {
   constructor() {
@@ -94,8 +94,8 @@ export default class Canvas extends Component {
         round: currentRoundUpdated
       })
     } else if (
-      currentRoundUpdated < 4 &&
-      this.turnOrderArray[0] !== this.username
+      currentRoundUpdated < 4 && this.props.myTurn
+      // this.turnOrderArray[0] !== this.username
     ) {
       this.setState({
         round: currentRoundUpdated
@@ -142,7 +142,8 @@ export default class Canvas extends Component {
         console.log(
           'array at 0 + username',
           this.turnOrderArray[0],
-          this.username
+          this.username,
+          this.props.myTurn // added
         )
         console.log('start turn countdown', this.turnOrderArray)
         await db.doc(`rooms/${this.roomId}`).update({
@@ -173,8 +174,8 @@ export default class Canvas extends Component {
     }
   }
   handleMouseDown() {
-    let myTurn = this.username === this.turnOrderArray[0]
-    if (myTurn) this.record = true
+    // let myTurn = this.username === this.turnOrderArray[0]
+    if (this.props.myTurn) this.record = true
   }
   handleMouseMove(event) {
     event.persist()
@@ -212,8 +213,8 @@ export default class Canvas extends Component {
     this.lineWidth = strokeSize
   }
   async handleMouseUp() {
-    let myTurn = this.username === this.turnOrderArray[0]
-    if (this.canvasData.length && myTurn) {
+    // let myTurn = this.username === this.turnOrderArray[0]
+    if (this.canvasData.length && this.props.myTurn) {
       let endDraw = this.canvasData[this.canvasData.length - 1]
       endDraw.lineEnd = true
       this.record = false
@@ -225,8 +226,8 @@ export default class Canvas extends Component {
     }
   }
   async getDrawing() {
-    let myTurn = this.username === this.turnOrderArray[0]
-    if (!myTurn) {
+    // let myTurn = this.username === this.turnOrderArray[0]
+    if (!this.props.myTurn) {
       await db
         .doc(`rooms/${this.roomId}/drawings/${this.drawingDocId}`)
         .onSnapshot(doc => {
@@ -365,8 +366,8 @@ export default class Canvas extends Component {
           >
             <img className="eraser" src="eraser.png" />
           </button>
-
-          {this.username === this.turnOrderArray[0] ? (
+          {/*this.username === this.turnOrderArray[0] ? (*/}
+          {this.props.myTurn ? (
             <button
               type="button"
               className="clear-btn white"
