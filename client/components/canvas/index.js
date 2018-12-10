@@ -174,6 +174,7 @@ export default class Canvas extends Component {
     }
   }
   handleMouseDown() {
+
     // let myTurn = this.username === this.turnOrderArray[0]
     if (this.props.myTurn) this.record = true
   }
