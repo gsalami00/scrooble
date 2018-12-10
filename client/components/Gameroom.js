@@ -1,10 +1,10 @@
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import db from '../../firestore.js'
-import Chat from './chat'
+// import Chat from './chat'
 import Lobby from './lobby'
 import Canvas from './canvas'
-import {Link} from 'react-router-dom'
-import Timer from './canvas/Timer'
+import { Link } from 'react-router-dom'
+// import Timer from './canvas/Timer'
 import Winner from './Winner'
 import ChooseWordPrompt from './canvas/ChooseWordPrompt.js'
 import Hangman from './Hangman'
@@ -77,7 +77,7 @@ export default class Gameroom extends Component {
     }, 1000)
   }
   handleChosenWord() {
-    this.setState({hasPickedWord: true})
+    this.setState({ hasPickedWord: true })
   }
   renderWinner() {
     this.setState({
@@ -85,7 +85,7 @@ export default class Gameroom extends Component {
     })
   }
   render() {
-    const {someoneWon, time, canvasData, myTurn, hasPickedWord} = this.state
+    const { someoneWon, time, canvasData, myTurn, hasPickedWord } = this.state
     return (
       <div className="gameroom-body">
         <div className="navbar">
@@ -120,6 +120,7 @@ export default class Gameroom extends Component {
               canvasData={canvasData}
               renderWinner={this.renderWinner}
               history={this.props.history}
+              myTurn={this.state.myTurn}
             />
           </div>
           <div className="clear" />
