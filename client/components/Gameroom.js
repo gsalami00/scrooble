@@ -1,10 +1,8 @@
 import React, { Component } from 'react'
 import db from '../../firestore.js'
-// import Chat from './chat'
 import Lobby from './lobby'
 import Canvas from './canvas'
 import { Link } from 'react-router-dom'
-// import Timer from './canvas/Timer'
 import Winner from './Winner'
 import ChooseWordPrompt from './canvas/ChooseWordPrompt.js'
 import Hangman from './Hangman'
@@ -19,7 +17,8 @@ export default class Gameroom extends Component {
       time: 75,
       hasPickedWord: false,
       myTurn: false,
-      chosenWord: ''
+      chosenWord: '',
+      showWordsToPick: false
     }
     this.renderWinner = this.renderWinner.bind(this)
     this.handleChosenWord = this.handleChosenWord.bind(this)
@@ -37,16 +36,23 @@ export default class Gameroom extends Component {
       .onSnapshot(doc => {
         if (doc.data().turnOrder[0] === this.state.username) {
           this.setState({
-            myTurn: true
+            myTurn: true,
+            showWordsToPick: true
           })
         } else {
           this.setState({
-            myTurn: false
+            myTurn: false,
+            showWordsToPick: false
           })
         }
-        this.setState({
-          chosenWord: doc.data().chosenWord
-        })
+        // this.setState({
+        //     chosenWord: doc.data().chosenWord
+        //   })
+        if (doc.data().chosenWord !== this.state.chosenWord) {
+          this.setState({
+            chosenWord: doc.data().chosenWord
+          })
+        }
       })
     window.onbeforeunload = this.leaveGame
     // The choose word prompt should appear if it's the player's turn (if the player in localstorage matches the first player in the array)
@@ -77,7 +83,7 @@ export default class Gameroom extends Component {
     }, 1000)
   }
   handleChosenWord() {
-    this.setState({ hasPickedWord: true })
+    this.setState({ hasPickedWord: true, showWordsToPick: false })
   }
   renderWinner() {
     this.setState({
@@ -85,7 +91,7 @@ export default class Gameroom extends Component {
     })
   }
   render() {
-    const { someoneWon, time, canvasData, myTurn, hasPickedWord } = this.state
+    const { someoneWon, time, canvasData, myTurn, hasPickedWord, showWordsToPick } = this.state
     return (
       <div className="gameroom-body">
         <div className="navbar">
@@ -126,8 +132,9 @@ export default class Gameroom extends Component {
           <div className="clear" />
         </div>
         {someoneWon ? <Winner /> : ''}
-        {myTurn && !hasPickedWord ? (
-          <ChooseWordPrompt handleChosenWord={this.handleChosenWord} />
+      {/* <ChooseWordPrompt handleChosenWord={this.handleChosenWord} hasPickedWord={this.state.hasPickedWord}/> */}
+        {myTurn && !hasPickedWord && !someoneWon && showWordsToPick ? (
+          <ChooseWordPrompt handleChosenWord={this.handleChosenWord}/>
         ) : (
           ''
         )}
