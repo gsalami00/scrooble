@@ -18,7 +18,7 @@ export default class Gameroom extends Component {
       hasPickedWord: false,
       myTurn: false,
       chosenWord: '',
-      showWordsToPick: false
+      showWordsToPick: true
     }
     this.renderWinner = this.renderWinner.bind(this)
     this.handleChosenWord = this.handleChosenWord.bind(this)
