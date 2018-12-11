@@ -48,6 +48,7 @@ export default class Gameroom extends Component {
         // this.setState({
         //     chosenWord: doc.data().chosenWord
         //   })
+
         if (doc.data().chosenWord !== this.state.chosenWord) {
           this.setState({
             chosenWord: doc.data().chosenWord
